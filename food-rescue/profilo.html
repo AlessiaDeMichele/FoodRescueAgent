@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gestisci il tuo account, i consensi e i tuoi dati personali.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Il mio profilo – Food Rescue</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- comune.js: HTTPS, menu e avviso demo (vale per tutte le pagine) -->
+  <script type="module" src="js/comune.js"></script>
+  <script type="module" src="js/profilo.js"></script>
+</head>
+<body>
+  <a class="salta" href="#contenuto">Vai al contenuto</a>
+
+  <header class="testata">
+    <div class="contenitore testata-interna">
+      <a class="logo" href="index.html">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M6 26C6 13 15 6 27 5c0 13-7 21-19 21" fill="#1e5b43"/>
+          <path d="M8 24C13 18 18 14 23 10" stroke="#f4c542" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        </svg>
+        Food Rescue
+      </a>
+      <nav aria-label="Menu principale">
+        <ul class="menu">
+          <li data-solo="ospite"><a href="login.html">Accedi</a></li>
+          <li data-solo="ospite"><a class="bottone piccolo" href="registrazione.html">Registrati</a></li>
+          <li data-solo="utente" hidden><a href="profilo.html">Il mio profilo</a></li>
+          <li data-solo="utente" hidden><button type="button" class="link" id="esci">Esci</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+
+  <main id="contenuto" class="stretto">
+    <h1>Il mio profilo</h1>
+    <p id="messaggio" class="messaggio" role="status" hidden></p>
+
+    <section class="riquadro" aria-labelledby="titolo-account">
+      <h2 id="titolo-account">Account</h2>
+      <dl class="dati">
+        <dt>Email</dt><dd id="p-email">…</dd>
+        <dt>Registrato il</dt><dd id="p-registrato">…</dd>
+        <dt>Ultimo accesso</dt><dd id="p-accesso">…</dd>
+        <dt>Informativa accettata</dt><dd id="p-informativa">…</dd>
+      </dl>
+      <p class="aiuto">Se l'ultimo accesso non ti risulta, cambia subito la password e scrivici.</p>
+    </section>
+
+    <section class="riquadro" aria-labelledby="titolo-consensi">
+      <h2 id="titolo-consensi">Consensi</h2>
+      <label class="spunta">
+        <input type="checkbox" id="p-newsletter">
+        <span>Ricevere via email aggiornamenti sul progetto. È facoltativo: puoi cambiare idea quando vuoi.</span>
+      </label>
+      <p id="msg-consensi" class="messaggio" role="status" hidden></p>
+    </section>
+
+    <section class="riquadro" aria-labelledby="titolo-dati">
+      <h2 id="titolo-dati">I tuoi dati</h2>
+      <p>Scarica una copia dei dati che conserviamo su di te, in formato JSON.</p>
+      <button type="button" class="bottone secondario" id="scarica">Scarica i miei dati</button>
+    </section>
+
+    <section class="riquadro zona-pericolo" aria-labelledby="titolo-elimina">
+      <h2 id="titolo-elimina">Elimina l'account</h2>
+      <p>Cancelliamo il tuo account, i tuoi consensi e i dati collegati. L'operazione non si può annullare.</p>
+      <button type="button" class="bottone pericolo" id="apri-elimina">Elimina l'account</button>
+    </section>
+
+    <dialog id="dialogo-elimina" aria-labelledby="titolo-dialogo">
+      <h2 id="titolo-dialogo">Vuoi davvero eliminare l'account?</h2>
+      <p>Per confermare, scrivi ELIMINA nel campo qui sotto.</p>
+      <div class="campo">
+        <label for="conferma-elimina">Conferma</label>
+        <input id="conferma-elimina" type="text" autocomplete="off">
+      </div>
+      <p id="msg-elimina" class="messaggio" role="status" hidden></p>
+      <div class="azioni">
+        <button type="button" class="bottone secondario" id="annulla">Annulla</button>
+        <button type="button" class="bottone pericolo" id="conferma" disabled>Elimina definitivamente</button>
+      </div>
+    </dialog>
+  </main>
+
+  <footer class="piede">
+    <div class="contenitore piede-interno">
+      <p>Food Rescue Agent – progetto contro lo spreco alimentare.</p>
+      <p><a href="privacy.html">Informativa privacy</a></p>
+    </div>
+  </footer>
+</body>
+</html>

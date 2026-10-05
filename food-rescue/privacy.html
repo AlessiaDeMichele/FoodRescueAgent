@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Come Food Rescue tratta i dati personali degli utenti.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Informativa privacy – Food Rescue</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- comune.js: HTTPS, menu e avviso demo (vale per tutte le pagine) -->
+  <script type="module" src="js/comune.js"></script>
+</head>
+<body>
+  <a class="salta" href="#contenuto">Vai al contenuto</a>
+
+  <header class="testata">
+    <div class="contenitore testata-interna">
+      <a class="logo" href="index.html">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M6 26C6 13 15 6 27 5c0 13-7 21-19 21" fill="#1e5b43"/>
+          <path d="M8 24C13 18 18 14 23 10" stroke="#f4c542" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        </svg>
+        Food Rescue
+      </a>
+      <nav aria-label="Menu principale">
+        <ul class="menu">
+          <li data-solo="ospite"><a href="login.html">Accedi</a></li>
+          <li data-solo="ospite"><a class="bottone piccolo" href="registrazione.html">Registrati</a></li>
+          <li data-solo="utente" hidden><a href="profilo.html">Il mio profilo</a></li>
+          <li data-solo="utente" hidden><button type="button" class="link" id="esci">Esci</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+
+  <main id="contenuto" class="stretto testo-legale">
+    <h1>Informativa privacy</h1>
+    <p>Ai sensi dell'art. 13 del Regolamento UE 2016/679 (GDPR). Versione 1.0, <mark>[data di pubblicazione]</mark>.</p>
+    <p class="aiuto">Le parti evidenziate sono da completare prima della pubblicazione.</p>
+
+    <h2>1. Titolare del trattamento</h2>
+    <p>Il titolare è il gruppo di progetto Food Rescue Agent, <mark>[nome della scuola o università, classe o corso]</mark>.
+      Puoi scriverci a <mark>[indirizzo email di contatto]</mark>.</p>
+
+    <h2>2. Quali dati raccogliamo</h2>
+    <ul>
+      <li><strong>Email:</strong> ti identifica e ti permette di accedere e di ricevere le comunicazioni sul servizio.</li>
+      <li><strong>Password:</strong> non la conserviamo mai in chiaro. Salviamo solo un'impronta cifrata (hash con salt, algoritmo bcrypt) che non permette di risalire alla password.</li>
+      <li><strong>Dati sui consensi:</strong> versione dell'informativa che hai accettato, data e ora; scelta sulla newsletter e data in cui l'hai data o revocata.</li>
+      <li><strong>Dati di accesso:</strong> data e ora dell'ultimo accesso e i registri tecnici degli accessi (che possono contenere l'indirizzo IP), usati per la sicurezza.</li>
+    </ul>
+    <p>Non ti chiediamo altri dati (nome, data di nascita, telefono, indirizzo): non servono per usare il servizio.</p>
+
+    <h2>3. Perché li usiamo e su quale base giuridica</h2>
+    <ul>
+      <li><strong>Creare e gestire il tuo account</strong> ed erogare il servizio: esecuzione del contratto che accetti registrandoti (art. 6, par. 1, lett. b GDPR). Senza questi dati non possiamo creare l'account.</li>
+      <li><strong>Proteggere il servizio</strong> da accessi non autorizzati, tramite i registri degli accessi: legittimo interesse alla sicurezza (art. 6, par. 1, lett. f e art. 32 GDPR).</li>
+      <li><strong>Inviarti aggiornamenti sul progetto</strong>, solo se lo scegli: consenso (art. 6, par. 1, lett. a GDPR). È facoltativo, separato dall'iscrizione e revocabile in ogni momento dal profilo.</li>
+    </ul>
+    <p>Non facciamo profilazione e non usiamo i tuoi dati per pubblicità.</p>
+
+    <h2>4. Per quanto tempo li conserviamo</h2>
+    <ul>
+      <li>Dati dell'account e dei consensi: finché l'account è attivo. Quando lo elimini, li cancelliamo dai sistemi attivi senza ritardo.</li>
+      <li>Consenso alla newsletter: fino a quando lo revochi o elimini l'account.</li>
+      <li>Registri degli accessi: <mark>[numero]</mark> giorni, poi vengono cancellati automaticamente.</li>
+    </ul>
+
+    <h2>5. Chi può vedere i dati</h2>
+    <p>I dati sono accessibili solo ai componenti del gruppo che amministrano il servizio. Per far funzionare il sito usiamo questi fornitori, che trattano i dati per nostro conto come responsabili del trattamento (art. 28 GDPR):</p>
+    <ul>
+      <li><strong>Supabase</strong> – database e gestione degli accessi. Server in <mark>[regione del progetto, consigliata UE]</mark>.</li>
+      <li><strong><mark>[Netlify o GitHub Pages]</mark></strong> – pubblicazione del sito.</li>
+      <li><strong>jsDelivr</strong> – distribuzione della libreria che collega il sito al database; riceve l'indirizzo IP di chi visita la pagina.</li>
+    </ul>
+    <p>Alcuni fornitori hanno sede fuori dall'Unione europea. In questi casi il trasferimento avviene con le garanzie previste dal GDPR, come le clausole contrattuali standard approvate dalla Commissione europea o il Data Privacy Framework UE-USA.</p>
+    <p>Non vendiamo né cediamo i tuoi dati a terzi.</p>
+
+    <h2>6. Come proteggiamo i dati</h2>
+    <ul>
+      <li>Il sito funziona solo su connessione cifrata HTTPS.</li>
+      <li>Le password sono salvate solo come hash con salt (bcrypt).</li>
+      <li>Ogni utente può leggere e modificare solo i propri dati; gli accessi ai sistemi sono registrati e controllati.</li>
+    </ul>
+
+    <h2>7. I tuoi diritti</h2>
+    <p>In base agli articoli da 15 a 22 del GDPR puoi chiedere in qualsiasi momento di:</p>
+    <ul>
+      <li>accedere ai tuoi dati e riceverne una copia (dal profilo: <em>Scarica i miei dati</em>);</li>
+      <li>correggerli se sono inesatti;</li>
+      <li>cancellarli (dal profilo: <em>Elimina l'account</em>);</li>
+      <li>limitarne il trattamento od opporti al trattamento basato sul legittimo interesse;</li>
+      <li>riceverli in un formato leggibile da un computer (portabilità);</li>
+      <li>revocare il consenso alla newsletter (dal profilo), senza conseguenze sul resto del servizio.</li>
+    </ul>
+    <p>Per le altre richieste scrivi a <mark>[indirizzo email di contatto]</mark>: rispondiamo entro un mese.</p>
+    <p>Se ritieni che il trattamento violi il GDPR, puoi presentare reclamo al <a href="https://www.garanteprivacy.it" target="_blank" rel="noopener">Garante per la protezione dei dati personali</a>.</p>
+
+    <h2>8. Cookie e memoria del browser</h2>
+    <p>Il sito non usa cookie di profilazione né strumenti di statistica. Salva nella memoria del browser (localStorage) solo il dato tecnico che ti mantiene collegato dopo l'accesso. È indispensabile al funzionamento del servizio, quindi non richiede consenso, e viene cancellato quando esci.</p>
+
+    <h2>9. Modifiche a questa informativa</h2>
+    <p>Se cambiamo l'informativa in modo rilevante, aggiorniamo il numero di versione e te lo segnaliamo al primo accesso successivo.</p>
+  </main>
+
+  <footer class="piede">
+    <div class="contenitore piede-interno">
+      <p>Food Rescue Agent – progetto contro lo spreco alimentare.</p>
+      <p><a href="privacy.html">Informativa privacy</a></p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,240 @@
+/* =========================================================
+   Food Rescue Agent – foglio di stile unico per tutto il sito
+   Le variabili qui sotto (colori, spazi) si cambiano in un punto
+   solo e valgono per tutte le pagine.
+   ========================================================= */
+
+:root {
+  /* Colori */
+  --verde: #1e5b43;          /* colore principale: bottoni, link, titoli */
+  --verde-scuro: #143f2e;    /* hover dei bottoni */
+  --verde-chiaro: #e3efe7;   /* sfondi delicati */
+  --limone: #f4c542;         /* accento: usato solo sull'etichetta della home */
+  --pomodoro: #b3321f;       /* errori e azioni pericolose */
+  --pomodoro-chiaro: #fbe9e5;
+  --ambra-chiaro: #fdf3d6;   /* avvisi */
+  --carta: #f6f8f5;          /* sfondo pagina */
+  --bianco: #ffffff;
+  --inchiostro: #17221d;     /* testo */
+  --grigio: #56625b;         /* testo secondario */
+  --bordo: #d3dcd6;
+
+  /* Caratteri: font di sistema, nessun download da server esterni */
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Misure */
+  --raggio: 10px;
+  --larghezza: 1120px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Un elemento con l'attributo hidden resta nascosto anche se
+   un'altra regola (es. .bottone) gli assegna un display */
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--inchiostro);
+  background: var(--carta);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main { flex: 1; padding-bottom: 3rem; }
+
+h1, h2, h3 { line-height: 1.15; letter-spacing: -0.01em; }
+h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); margin: 2rem 0 0.75rem; }
+h2 { font-size: 1.4rem; margin: 2rem 0 0.75rem; }
+h3 { font-size: 1.1rem; margin: 1.25rem 0 0.4rem; }
+p { margin: 0 0 1rem; max-width: 70ch; }
+
+a { color: var(--verde); text-underline-offset: 3px; }
+a:hover { color: var(--verde-scuro); }
+
+/* Il contorno di focus deve restare visibile per chi naviga con la tastiera */
+:focus-visible { outline: 3px solid var(--limone); outline-offset: 2px; }
+
+.contenitore { width: min(100% - 2rem, var(--larghezza)); margin-inline: auto; }
+.stretto { width: min(100% - 2rem, 640px); margin-inline: auto; }
+
+/* Link "Vai al contenuto": appare solo quando riceve il focus da tastiera */
+.salta {
+  position: absolute; left: 1rem; top: -3rem;
+  background: var(--inchiostro); color: var(--bianco);
+  padding: 0.5rem 1rem; border-radius: var(--raggio); z-index: 1000;
+}
+.salta:focus { top: 1rem; color: var(--bianco); }
+
+/* Testo leggibile solo dagli screen reader */
+.solo-lettori {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* ---------- Avviso modalità demo ---------- */
+.banner-demo {
+  background: var(--ambra-chiaro);
+  border-bottom: 1px solid #e8d48f;
+  font-size: 0.9rem;
+  padding: 0.5rem 0;
+}
+.banner-demo p { margin: 0; max-width: none; }
+
+/* ---------- Testata e menu ---------- */
+.testata { background: var(--bianco); border-bottom: 1px solid var(--bordo); }
+.testata-interna {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; flex-wrap: wrap; padding: 0.75rem 0;
+}
+.logo {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-weight: 800; font-size: 1.2rem; color: var(--inchiostro); text-decoration: none;
+}
+.logo svg { width: 28px; height: 28px; }
+.menu {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 1.1rem;
+}
+.menu a, .menu .link { color: var(--inchiostro); text-decoration: none; font-weight: 500; }
+.menu a:hover, .menu .link:hover { color: var(--verde); text-decoration: underline; }
+.menu a[aria-current="page"] { color: var(--verde); text-decoration: underline; text-decoration-thickness: 2px; }
+.menu .bottone, .menu .bottone[aria-current="page"] { color: var(--bianco); text-decoration: none; }
+
+/* ---------- Bottoni ---------- */
+.bottone {
+  display: inline-block;
+  font: inherit; font-weight: 600;
+  background: var(--verde); color: var(--bianco);
+  border: 2px solid var(--verde); border-radius: var(--raggio);
+  padding: 0.65rem 1.2rem; cursor: pointer; text-decoration: none;
+}
+.bottone:hover { background: var(--verde-scuro); border-color: var(--verde-scuro); color: var(--bianco); }
+.bottone.secondario { background: transparent; color: var(--verde); }
+.bottone.secondario:hover { background: var(--verde-chiaro); color: var(--verde-scuro); }
+.bottone.pericolo { background: var(--pomodoro); border-color: var(--pomodoro); }
+.bottone.pericolo:hover { background: #8f2617; border-color: #8f2617; }
+.bottone.piccolo { padding: 0.35rem 0.8rem; font-size: 0.95rem; }
+.bottone:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* Bottone che sembra un link (es. "Esci", "Modifica") */
+.link {
+  font: inherit; background: none; border: 0; padding: 0;
+  color: var(--verde); text-decoration: underline; cursor: pointer;
+}
+.link.pericolo { color: var(--pomodoro); }
+
+.azioni { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1.25rem 0; }
+
+/* ---------- Home ---------- */
+.eroe { background: var(--verde); color: var(--bianco); padding: 3rem 0 3.5rem; }
+.eroe a:not(.bottone) { color: var(--bianco); }
+.eroe-griglia {
+  display: grid; grid-template-columns: 1.3fr 1fr; gap: 3rem; align-items: center;
+}
+.eroe h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); margin-top: 0; max-width: 15ch; }
+.eroe .sottotitolo { font-size: 1.2rem; color: #d9eadf; }
+.eroe .bottone { background: var(--limone); border-color: var(--limone); color: var(--inchiostro); }
+.eroe .bottone:hover { background: #ffd65e; border-color: #ffd65e; }
+.eroe .bottone.secondario { background: transparent; border-color: var(--bianco); color: var(--bianco); }
+.eroe .bottone.secondario:hover { background: rgba(255, 255, 255, 0.12); }
+
+/* L'etichetta della home: sagoma di un cartellino con l'angolo tagliato */
+.etichetta {
+  margin: 0;
+  background: var(--limone); color: var(--inchiostro);
+  padding: 1.5rem 1.75rem 1.25rem;
+  clip-path: polygon(0 0, calc(100% - 34px) 0, 100% 34px, 100% 100%, 0 100%);
+  transform: rotate(-2deg);
+  max-width: 360px; justify-self: center;
+}
+.etichetta-nota { font-size: 0.85rem; margin: 0 0 0.25rem; }
+.etichetta-titolo { font-size: 1.6rem; font-weight: 800; margin: 0 0 0.75rem; }
+.etichetta dl { margin: 0; border-top: 2px dashed rgba(23, 34, 29, 0.4); }
+.etichetta dl div { display: flex; justify-content: space-between; gap: 1rem; padding: 0.45rem 0; border-bottom: 2px dashed rgba(23, 34, 29, 0.4); }
+.etichetta dt { font-size: 0.9rem; }
+.etichetta dd { margin: 0; font-weight: 700; text-align: right; }
+.etichetta-esito { margin: 0.85rem 0 0; font-weight: 700; }
+
+.sezione { padding-top: 1rem; }
+
+.passi { list-style: none; counter-reset: passo; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+.passi li { counter-increment: passo; border-top: 3px solid var(--verde); padding-top: 0.75rem; }
+.passi li::before { content: counter(passo); font-size: 2rem; font-weight: 800; color: var(--verde); }
+.passi h3 { margin-top: 0.25rem; }
+
+/* ---------- Riquadri e messaggi ---------- */
+.riquadro {
+  background: var(--bianco); border: 1px solid var(--bordo);
+  border-radius: var(--raggio); padding: 1.25rem 1.5rem; margin: 1.5rem 0;
+}
+.riquadro > h2:first-child { margin-top: 0; }
+.zona-pericolo { border-color: #e7b8ae; }
+
+.messaggio { padding: 0.75rem 1rem; border-radius: var(--raggio); margin: 1rem 0; max-width: none; }
+.messaggio.successo { background: var(--verde-chiaro); border-left: 4px solid var(--verde); }
+.messaggio.errore { background: var(--pomodoro-chiaro); border-left: 4px solid var(--pomodoro); }
+.messaggio.info { background: var(--ambra-chiaro); border-left: 4px solid #c99a12; }
+
+.nota, .aiuto { font-size: 0.9rem; color: var(--grigio); }
+.aiuto { margin: 0.3rem 0 0; }
+
+/* Segnaposto da completare nell'informativa */
+mark { background: var(--ambra-chiaro); outline: 1px dashed #c99a12; padding: 0 0.2rem; }
+
+/* ---------- Moduli ---------- */
+form { margin: 1.5rem 0; }
+fieldset { border: 1px solid var(--bordo); border-radius: var(--raggio); padding: 1rem 1.25rem 1.25rem; margin: 0 0 1.5rem; background: var(--bianco); }
+legend { font-weight: 700; padding: 0 0.4rem; }
+.campo { margin-bottom: 1rem; }
+.campo label { display: block; font-weight: 600; margin-bottom: 0.3rem; }
+input[type="text"], input[type="email"], input[type="password"], input[type="number"],
+input[type="date"], select, textarea {
+  width: 100%; font: inherit;
+  padding: 0.6rem 0.75rem;
+  border: 1.5px solid #a9b6ae; border-radius: 8px;
+  background: var(--bianco); color: var(--inchiostro);
+}
+input:focus, select:focus, textarea:focus { border-color: var(--verde); }
+input[aria-invalid="true"] { border-color: var(--pomodoro); }
+
+/* Caselle di spunta e radio: il testo va a capo accanto alla casella */
+.spunta { display: flex; gap: 0.6rem; align-items: flex-start; margin: 0.6rem 0; font-weight: 400; cursor: pointer; }
+.spunta input { width: 1.2rem; height: 1.2rem; margin-top: 0.2rem; flex-shrink: 0; accent-color: var(--verde); }
+.obbligo { font-size: 0.85rem; color: var(--grigio); }
+
+/* Coppie etichetta/valore (es. dati del profilo) */
+.dati { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 0.4rem 1.5rem; }
+.dati dt { color: var(--grigio); }
+.dati dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+
+/* ---------- Finestra di conferma ---------- */
+dialog { border: 0; border-radius: var(--raggio); padding: 1.5rem; max-width: 460px; width: calc(100% - 2rem); }
+dialog::backdrop { background: rgba(23, 34, 29, 0.55); }
+dialog h2 { margin-top: 0; }
+
+/* ---------- Informativa privacy ---------- */
+.testo-legale h2 { border-top: 1px solid var(--bordo); padding-top: 1.25rem; }
+.testo-legale li { margin-bottom: 0.4rem; max-width: 70ch; }
+
+/* ---------- Piè di pagina ---------- */
+.piede { background: var(--inchiostro); color: #cfd8d2; padding: 1.5rem 0; font-size: 0.93rem; }
+.piede a { color: var(--bianco); }
+.piede-interno { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 2rem; }
+.piede p { margin: 0; }
+
+/* ---------- Schermi piccoli ---------- */
+@media (max-width: 800px) {
+  .eroe-griglia { grid-template-columns: 1fr; }
+  .passi { grid-template-columns: 1fr; gap: 1.25rem; }
+  .etichetta { transform: none; }
+}
+
+/* Chi ha chiesto meno animazioni al sistema operativo non vede la rotazione */
+@media (prefers-reduced-motion: reduce) {
+  .etichetta { transform: none; }
+}

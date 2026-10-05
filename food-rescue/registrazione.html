@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Registrazione a Food Rescue: servono solo email e password.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Crea un account – Food Rescue</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- comune.js: HTTPS, menu e avviso demo (vale per tutte le pagine) -->
+  <script type="module" src="js/comune.js"></script>
+  <script type="module" src="js/registrazione.js"></script>
+</head>
+<body>
+  <a class="salta" href="#contenuto">Vai al contenuto</a>
+
+  <header class="testata">
+    <div class="contenitore testata-interna">
+      <a class="logo" href="index.html">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M6 26C6 13 15 6 27 5c0 13-7 21-19 21" fill="#1e5b43"/>
+          <path d="M8 24C13 18 18 14 23 10" stroke="#f4c542" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        </svg>
+        Food Rescue
+      </a>
+      <nav aria-label="Menu principale">
+        <ul class="menu">
+          <li data-solo="ospite"><a href="login.html">Accedi</a></li>
+          <li data-solo="ospite"><a class="bottone piccolo" href="registrazione.html">Registrati</a></li>
+          <li data-solo="utente" hidden><a href="profilo.html">Il mio profilo</a></li>
+          <li data-solo="utente" hidden><button type="button" class="link" id="esci">Esci</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+
+  <main id="contenuto" class="stretto">
+    <h1>Crea il tuo account</h1>
+    <p>Ti chiediamo solo email e password: servono per accedere e per avvisarti sulle tue donazioni.</p>
+
+    <!-- R1/R2: informativa sintetica mostrata PRIMA della registrazione -->
+    <section class="riquadro" aria-labelledby="titolo-info">
+      <h2 id="titolo-info">Come usiamo i tuoi dati</h2>
+      <dl class="dati">
+        <dt>Chi li tratta</dt><dd>Il gruppo di progetto Food Rescue Agent (titolare del trattamento)</dd>
+        <dt>Quali dati</dt><dd>Email e password, che salviamo solo in forma cifrata</dd>
+        <dt>Perché</dt><dd>Creare e gestire il tuo account</dd>
+        <dt>Per quanto</dt><dd>Finché l'account è attivo: puoi eliminarlo quando vuoi dal profilo</dd>
+        <dt>I tuoi diritti</dt><dd>Accesso, rettifica, cancellazione e gli altri previsti dal GDPR</dd>
+      </dl>
+      <p class="aiuto"><a href="privacy.html" target="_blank" rel="noopener">Leggi l'informativa completa</a> (si apre in una nuova scheda)</p>
+    </section>
+
+    <form id="modulo-registrazione" novalidate>
+      <div class="campo">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" required>
+      </div>
+      <div class="campo">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="new-password" minlength="8" required aria-describedby="aiuto-password">
+        <p id="aiuto-password" class="aiuto">Almeno 8 caratteri.</p>
+      </div>
+      <div class="campo">
+        <label for="password2">Ripeti la password</label>
+        <input id="password2" name="password2" type="password" autocomplete="new-password" minlength="8" required>
+      </div>
+
+      <fieldset>
+        <legend>Informativa e consensi</legend>
+        <!-- R1: casella NON pre-spuntata (nessun attributo "checked") -->
+        <label class="spunta">
+          <input type="checkbox" id="privacy" name="privacy" required>
+          <span>Ho letto l'<a href="privacy.html" target="_blank" rel="noopener">informativa privacy</a> e accetto le condizioni del servizio. <span class="obbligo">(obbligatorio)</span></span>
+        </label>
+        <!-- R3: consenso separato e facoltativo per la newsletter -->
+        <label class="spunta">
+          <input type="checkbox" id="newsletter" name="newsletter">
+          <span>Voglio ricevere via email aggiornamenti sul progetto. <span class="obbligo">(facoltativo: puoi registrarti anche senza e cambiare idea dal profilo)</span></span>
+        </label>
+      </fieldset>
+
+      <p id="messaggio" class="messaggio" role="status" hidden></p>
+      <button type="submit" class="bottone">Crea l'account</button>
+    </form>
+
+    <p>Hai già un account? <a href="login.html">Accedi</a></p>
+  </main>
+
+  <footer class="piede">
+    <div class="contenitore piede-interno">
+      <p>Food Rescue Agent – progetto contro lo spreco alimentare.</p>
+      <p><a href="privacy.html">Informativa privacy</a></p>
+    </div>
+  </footer>
+</body>
+</html>

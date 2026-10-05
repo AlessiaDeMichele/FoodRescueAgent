@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Food Rescue mette in contatto chi ha cibo in eccedenza con i centri di raccolta vicini.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Food Rescue – il cibo che avanza trova chi ne ha bisogno</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- comune.js: HTTPS, menu e avviso demo (vale per tutte le pagine) -->
+  <script type="module" src="js/comune.js"></script>
+</head>
+<body>
+  <a class="salta" href="#contenuto">Vai al contenuto</a>
+
+  <header class="testata">
+    <div class="contenitore testata-interna">
+      <a class="logo" href="index.html">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M6 26C6 13 15 6 27 5c0 13-7 21-19 21" fill="#1e5b43"/>
+          <path d="M8 24C13 18 18 14 23 10" stroke="#f4c542" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        </svg>
+        Food Rescue
+      </a>
+      <nav aria-label="Menu principale">
+        <ul class="menu">
+          <li data-solo="ospite"><a href="login.html">Accedi</a></li>
+          <li data-solo="ospite"><a class="bottone piccolo" href="registrazione.html">Registrati</a></li>
+          <li data-solo="utente" hidden><a href="profilo.html">Il mio profilo</a></li>
+          <li data-solo="utente" hidden><button type="button" class="link" id="esci">Esci</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+
+  <main id="contenuto">
+    <section class="eroe">
+      <div class="contenitore eroe-griglia">
+        <div>
+          <h1>Il cibo che avanza trova chi ne ha bisogno.</h1>
+          <p class="sottotitolo">Registra le eccedenze di casa o del tuo locale: avvisiamo i centri di raccolta vicini che accettano quel tipo di alimento.</p>
+          <div class="azioni">
+            <a class="bottone" data-solo="ospite" href="registrazione.html">Crea un account</a>
+            <a class="bottone secondario" data-solo="ospite" href="login.html">Accedi</a>
+            <a class="bottone" data-solo="utente" hidden href="profilo.html">Vai al tuo profilo</a>
+          </div>
+        </div>
+        <figure class="etichetta">
+          <p class="etichetta-nota">Esempio di donazione</p>
+          <p class="etichetta-titolo">Pane e focacce</p>
+          <dl>
+            <div><dt>Quantità</dt><dd>4 kg</dd></div>
+            <div><dt>Da consumarsi preferibilmente entro</dt><dd>domani</dd></div>
+            <div><dt>Conservazione</dt><dd>ambiente</dd></div>
+          </dl>
+          <p class="etichetta-esito">Avvisati i centri entro 10 km</p>
+        </figure>
+      </div>
+    </section>
+
+    <section class="contenitore sezione">
+      <h2>Come funziona una donazione</h2>
+      <ol class="passi">
+        <li>
+          <h3>Registri il prodotto</h3>
+          <p>Indichi cosa doni, quanto, la data riportata sulla confezione e dove si ritira.</p>
+        </li>
+        <li>
+          <h3>Avvisiamo i centri adatti</h3>
+          <p>Ricevono un'email solo i centri vicini che accettano quella categoria di alimenti.</p>
+        </li>
+        <li>
+          <h3>Il centro ti contatta</h3>
+          <p>Concordate il ritiro. Fino alla consegna sei tu a garantire la corretta conservazione del prodotto.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="contenitore sezione">
+      <div class="riquadro">
+        <h2>I tuoi dati restano tuoi</h2>
+        <p>Per registrarti ti chiediamo solo email e password. Dal profilo puoi scaricare una copia dei tuoi dati o eliminare l'account in qualsiasi momento.</p>
+        <p><a href="privacy.html">Leggi l'informativa privacy</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="piede">
+    <div class="contenitore piede-interno">
+      <p>Food Rescue Agent – progetto contro lo spreco alimentare.</p>
+      <p><a href="privacy.html">Informativa privacy</a></p>
+    </div>
+  </footer>
+</body>
+</html>

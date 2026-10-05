@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Accedi al tuo account Food Rescue.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Accedi – Food Rescue</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- comune.js: HTTPS, menu e avviso demo (vale per tutte le pagine) -->
+  <script type="module" src="js/comune.js"></script>
+  <script type="module" src="js/login.js"></script>
+</head>
+<body>
+  <a class="salta" href="#contenuto">Vai al contenuto</a>
+
+  <header class="testata">
+    <div class="contenitore testata-interna">
+      <a class="logo" href="index.html">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M6 26C6 13 15 6 27 5c0 13-7 21-19 21" fill="#1e5b43"/>
+          <path d="M8 24C13 18 18 14 23 10" stroke="#f4c542" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        </svg>
+        Food Rescue
+      </a>
+      <nav aria-label="Menu principale">
+        <ul class="menu">
+          <li data-solo="ospite"><a href="login.html">Accedi</a></li>
+          <li data-solo="ospite"><a class="bottone piccolo" href="registrazione.html">Registrati</a></li>
+          <li data-solo="utente" hidden><a href="profilo.html">Il mio profilo</a></li>
+          <li data-solo="utente" hidden><button type="button" class="link" id="esci">Esci</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+
+  <main id="contenuto" class="stretto">
+    <h1>Accedi</h1>
+    <p id="messaggio" class="messaggio" role="status" hidden></p>
+
+    <form id="modulo-login" novalidate>
+      <div class="campo">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" required>
+      </div>
+      <div class="campo">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="bottone">Accedi</button>
+    </form>
+
+    <p>Non hai un account? <a href="registrazione.html">Registrati</a></p>
+  </main>
+
+  <footer class="piede">
+    <div class="contenitore piede-interno">
+      <p>Food Rescue Agent – progetto contro lo spreco alimentare.</p>
+      <p><a href="privacy.html">Informativa privacy</a></p>
+    </div>
+  </footer>
+</body>
+</html>
