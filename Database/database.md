@@ -1,16 +1,16 @@
-Tabella Utente_Fisico: nome, cognome, id_utente (PK)
+Tabella Utente_Fisico: nome, cognome, id_utente (PK), email, password
 
-Tabella Utente_Impresa: nome_impresa, id_impresa (PK), posizione
+Tabella Utente_Impresa: nome_impresa, id_impresa (PK), posizione, email, password
 
-Tabella Centro_Raccolta: nome_centro, id_centro (PK), posizione
+Tabella Centro_Raccolta: nome_centro, id_centro (PK), posizione, email, password
 
-Tabella Donazione: id_donatore_fisico (FK: id_utente, può essere NULL), id_donatore_impresa (FK: id_impresa, può essere NULL), nome, categoria, data_scadenza, quantità, id_donazione, data_donazione, centro_raccolta (FK: id_centro)
+Tabella Donazione: id_donatore_fisico (FK: id_utente, può essere NULL), id_donatore_impresa (FK: id_impresa, può essere NULL), nome, categoria, data_scadenza, quantità, id_donazione (PK), data_donazione, centro_raccolta (FK: id_centro)
 
 (una FK non può puntare a due diverse colonne di due diverse tabelle, quindi si creano due FK per ogni colonna a cui si vuole puntare con la regola speciale che solo una di queste FK per tupla può essre valorizzata)
 
-Tabella Evento: numero_invitati, id_ingredienti (FK: id_spesa), id_evento (PK), id_utente (FK: id_utente, può essere NULL), id_impresa (FK: id_impresa, può essere NULL), id_centro (FK: id_centro, può essere NULL), budget
+Tabella Evento: numero_invitati, id_evento (PK), id_utente (FK: id_utente, può essere NULL), id_impresa (FK: id_impresa, può essere NULL), id_centro (FK: id_centro, può essere NULL), budget
 
-Tabella Ingrediente_Evento: id_evento (FK: id_evento), id_ingrediente (FK: id_ingrediente), quantita, (PK: id_evento e id_ingrediente)
+Tabella Ingrediente_Evento: id_evento (FK: id_evento), id_ingrediente (FK: id_ingrediente), quantita, (PK: id_evento e id_ingrediente), unita
 
 Tabella Ingrediente: id_ingrediente (PK), nome
 
