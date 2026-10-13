@@ -16,7 +16,7 @@ Tabella Ingrediente: id_ingrediente (PK), nome
 
 Tabella Messaggio: id_messaggio (PK), id_conversazione (FK: id_conversazione), testo, timestamp_invio, inviato_da_centro (BOOLEAN, se TRUE il messaggio è stato inviato dal centro di raccolta, altrimenti dall'altro attore della conversazione, utente fisico o impresa)
 
-Tabella Conversazione: id_utente (FK: id_utente), id_impresa (FK: id_impresa), id_centro (FK: id_centro), id_conversazione (PK)
+Tabella Conversazione: id_utente (FK: id_utente, può essere NULL), id_impresa (FK: id_impresa, può essere NULL), id_centro (FK: id_centro), id_conversazione (PK)
 
 Tabella Chat_IA: id_chat (PK), id_evento (FK: id_evento), data_creazione
 
