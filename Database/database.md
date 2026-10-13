@@ -25,6 +25,9 @@ Tabella Messaggio_IA: id_messaggio_ia (PK), id_chat (FK: id_chat), testo, timest
 (ogni evento ha una sola chat: id_evento in Chat_IA non può essere NULL e non può ripetersi; la chat viene creata automaticamente alla creazione dell’evento)
 
 
+
+
+
 Supabase (PostgreSQL), piano gratuito:
 Unlimited API requests
 
