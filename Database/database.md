@@ -18,8 +18,11 @@ Tabella Messaggio: id_messaggio (PK), id_conversazione (FK: id_conversazione), t
 
 Tabella Conversazione: id_utente (FK: id_utente), id_impresa (FK: id_impresa), id_centro (FK: id_centro), id_conversazione (PK)
 
-Tabella Chat_IA: ???
+Tabella Chat_IA: id_chat (PK), id_evento (FK: id_evento), data_creazione
 
+Tabella Messaggio_IA: id_messaggio_ia (PK), id_chat (FK: id_chat), testo, timestamp_invio, inviato_da_ia (BOOLEAN, se TRUE il messaggio è stato inviato dall’IA, altrimenti dall’organizzatore dell’evento)
+
+(ogni evento ha una sola chat: id_evento in Chat_IA non può essere NULL e non può ripetersi; la chat viene creata automaticamente alla creazione dell’evento)
 
 
 Supabase (PostgreSQL), piano gratuito:
