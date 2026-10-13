@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Pannello di amministrazione dei centri di raccolta.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Gestione centri – Food Rescue</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Leaflet: libreria per le mappe interattive -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- comune.js: HTTPS, menu e avviso demo (vale per tutte le pagine) -->
+  <script type="module" src="js/comune.js"></script>
+  <script type="module" src="js/admin.js"></script>
+</head>
+<body>
+  <a class="salta" href="#contenuto">Vai al contenuto</a>
+
+  <header class="testata">
+    <div class="contenitore testata-interna">
+      <a class="logo" href="index.html">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M6 26C6 13 15 6 27 5c0 13-7 21-19 21" fill="#1e5b43"/>
+          <path d="M8 24C13 18 18 14 23 10" stroke="#f4c542" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        </svg>
+        Food Rescue
+      </a>
+      <nav aria-label="Menu principale">
+        <ul class="menu">
+          <li><a href="mappa.html">Mappa dei centri</a></li>
+          <li data-solo="admin" hidden><a href="admin.html">Gestione centri</a></li>
+          <li data-solo="ospite"><a href="login.html">Accedi</a></li>
+          <li data-solo="ospite"><a class="bottone piccolo" href="registrazione.html">Registrati</a></li>
+          <li data-solo="utente" hidden><a href="profilo.html">Il mio profilo</a></li>
+          <li data-solo="utente" hidden><button type="button" class="link" id="esci">Esci</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+
+  <main id="contenuto" class="contenitore">
+    <h1>Gestione centri di raccolta</h1>
+    <p>Aggiungi, modifica o elimina i centri. Ogni centro compare subito sulla mappa e riceve gli avvisi delle donazioni compatibili.</p>
+    <p id="messaggio" class="messaggio" role="status" hidden></p>
+
+    <div class="admin-layout">
+      <section aria-labelledby="titolo-elenco">
+        <h2 id="titolo-elenco">Centri presenti <span id="conteggio" class="nota"></span></h2>
+        <div class="tabella-scorri">
+          <table class="tabella">
+            <thead>
+              <tr>
+                <th scope="col">Centro</th>
+                <th scope="col">Alimenti accettati</th>
+                <th scope="col"><span class="solo-lettori">Azioni</span></th>
+              </tr>
+            </thead>
+            <tbody id="righe-centri"></tbody>
+          </table>
+        </div>
+        <p id="nessun-centro" class="nota" hidden>Non ci sono ancora centri: aggiungi il primo con il modulo.</p>
+      </section>
+
+      <section class="riquadro" aria-labelledby="titolo-modulo">
+        <h2 id="titolo-modulo">Aggiungi un centro</h2>
+        <form id="modulo-centro" novalidate>
+          <div class="campo">
+            <label for="nome">Nome del centro</label>
+            <input id="nome" name="nome" type="text" maxlength="120" required>
+          </div>
+          <div class="campo">
+            <label for="email">Email per gli avvisi</label>
+            <input id="email" name="email" type="email" required aria-describedby="aiuto-email">
+            <p id="aiuto-email" class="aiuto">Qui arriveranno le email sulle donazioni compatibili.</p>
+          </div>
+          <div class="campo">
+            <label for="indirizzo">Indirizzo</label>
+            <input id="indirizzo" name="indirizzo" type="text" maxlength="160" required>
+          </div>
+          <div class="campo">
+            <label for="citta">Città</label>
+            <input id="citta" name="citta" type="text" maxlength="80" required>
+          </div>
+
+          <fieldset>
+            <legend>Posizione sulla mappa</legend>
+            <button type="button" class="bottone secondario piccolo" id="trova-coordinate">Trova dall'indirizzo</button>
+            <p class="aiuto">Oppure clicca il punto sulla mappa. Puoi trascinare il segnaposto per correggerlo.</p>
+            <div id="mappa-admin" class="mappa piccola" role="region" aria-label="Mappa per scegliere la posizione del centro"></div>
+            <div class="riga-campi">
+              <div class="campo">
+                <label for="latitudine">Latitudine</label>
+                <input id="latitudine" name="latitudine" type="number" step="any" min="-90" max="90" required>
+              </div>
+              <div class="campo">
+                <label for="longitudine">Longitudine</label>
+                <input id="longitudine" name="longitudine" type="number" step="any" min="-180" max="180" required>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Alimenti accettati</legend>
+            <div id="categorie"></div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Requisiti dell'ente</legend>
+            <!-- R10: le donazioni vanno solo a enti del Terzo Settore che seguono le corrette prassi -->
+            <label class="spunta">
+              <input type="checkbox" id="ets" name="ets" required>
+              <span>Il centro è un ente del Terzo Settore (o ente caritativo) che applica il Manuale di corrette prassi operative per le organizzazioni caritative. <span class="obbligo">(obbligatorio)</span></span>
+            </label>
+          </fieldset>
+
+          <p id="msg-modulo" class="messaggio" role="status" hidden></p>
+          <div class="azioni">
+            <button type="submit" class="bottone" id="salva">Aggiungi il centro</button>
+            <button type="button" class="bottone secondario" id="annulla-modifica" hidden>Annulla la modifica</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <dialog id="dialogo-elimina" aria-labelledby="titolo-dialogo">
+      <h2 id="titolo-dialogo">Eliminare questo centro?</h2>
+      <p><strong id="nome-da-eliminare"></strong> sparirà dalla mappa e non riceverà più gli avvisi delle donazioni.</p>
+      <p id="msg-elimina" class="messaggio" role="status" hidden></p>
+      <div class="azioni">
+        <button type="button" class="bottone secondario" id="annulla-elimina">Annulla</button>
+        <button type="button" class="bottone pericolo" id="conferma-elimina">Elimina il centro</button>
+      </div>
+    </dialog>
+  </main>
+
+  <footer class="piede">
+    <div class="contenitore piede-interno">
+      <p>Food Rescue Agent – progetto contro lo spreco alimentare.</p>
+      <p><a href="privacy.html">Informativa privacy</a></p>
+    </div>
+  </footer>
+</body>
+</html>

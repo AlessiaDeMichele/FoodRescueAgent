@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Mappa interattiva dei centri di raccolta che accettano donazioni di cibo.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Mappa dei centri di raccolta – Food Rescue</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Leaflet: libreria per le mappe interattive -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- comune.js: HTTPS, menu e avviso demo (vale per tutte le pagine) -->
+  <script type="module" src="js/comune.js"></script>
+  <script type="module" src="js/mappa.js"></script>
+</head>
+<body>
+  <a class="salta" href="#contenuto">Vai al contenuto</a>
+
+  <header class="testata">
+    <div class="contenitore testata-interna">
+      <a class="logo" href="index.html">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M6 26C6 13 15 6 27 5c0 13-7 21-19 21" fill="#1e5b43"/>
+          <path d="M8 24C13 18 18 14 23 10" stroke="#f4c542" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        </svg>
+        Food Rescue
+      </a>
+      <nav aria-label="Menu principale">
+        <ul class="menu">
+          <li><a href="mappa.html">Mappa dei centri</a></li>
+          <li data-solo="admin" hidden><a href="admin.html">Gestione centri</a></li>
+          <li data-solo="ospite"><a href="login.html">Accedi</a></li>
+          <li data-solo="ospite"><a class="bottone piccolo" href="registrazione.html">Registrati</a></li>
+          <li data-solo="utente" hidden><a href="profilo.html">Il mio profilo</a></li>
+          <li data-solo="utente" hidden><button type="button" class="link" id="esci">Esci</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+
+  <main id="contenuto" class="contenitore">
+    <h1>Mappa dei centri di raccolta</h1>
+    <p>Tocca un segnaposto per vedere indirizzo e alimenti accettati, oppure scorri l'elenco.</p>
+
+    <div class="filtri">
+      <div class="campo">
+        <label for="filtro-categoria">Alimenti accettati</label>
+        <select id="filtro-categoria">
+          <option value="">Tutte le categorie</option>
+        </select>
+      </div>
+      <button type="button" class="bottone secondario" id="vicino-a-me">Mostra i più vicini a me</button>
+    </div>
+    <p id="messaggio" class="messaggio" role="status" hidden></p>
+
+    <div class="mappa-layout">
+      <div id="mappa" class="mappa" role="region" aria-label="Mappa interattiva dei centri di raccolta"></div>
+      <section aria-labelledby="titolo-elenco">
+        <h2 id="titolo-elenco">Elenco dei centri <span id="conteggio" class="nota"></span></h2>
+        <ul id="elenco-centri" class="elenco-centri" aria-live="polite"></ul>
+      </section>
+    </div>
+  </main>
+
+  <footer class="piede">
+    <div class="contenitore piede-interno">
+      <p>Food Rescue Agent – progetto contro lo spreco alimentare.</p>
+      <p><a href="privacy.html">Informativa privacy</a></p>
+    </div>
+  </footer>
+</body>
+</html>
