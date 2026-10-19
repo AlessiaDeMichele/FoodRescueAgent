@@ -23,29 +23,3 @@ Tabella Chat_IA: id_chat (PK), id_evento (FK: id_evento), data_creazione
 Tabella Messaggio_IA: id_messaggio_ia (PK), id_chat (FK: id_chat), testo, timestamp_invio, inviato_da_ia (BOOLEAN, se TRUE il messaggio è stato inviato dall’IA, altrimenti dall’organizzatore dell’evento)
 
 (ogni evento ha una sola chat: id_evento in Chat_IA non può essere NULL e non può ripetersi; la chat viene creata automaticamente alla creazione dell’evento)
-
-
-
-
-
-Supabase (PostgreSQL), piano gratuito:
-Unlimited API requests
-
-50,000 monthly active users
-
-500 MB database size
-Shared CPU • 500 MB RAM
-
-5 GB egress
-
-5 GB cached egress
-
-1 GB file storage
-
-Community support
-
-Cose da chiedere:
-1. Attributo "budget" nella tabella Evento, ha senso nel nostro progetto?
-2. L'evento può essere organizzato da quali tipi di utenti?
-3. Servono specifiche aggiuntive per quanto riguarda l' "evento".
-4. La chat con l'agente IA deve essere stateless oppure deve essere salvata?
