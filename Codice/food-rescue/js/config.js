@@ -10,9 +10,8 @@
 // La chiave "anon"/"publishable" può stare qui: è pubblica per costruzione.
 // NON incollare MAI qui la chiave "service_role"/"secret".
 // =========================================================
-
-export const SUPABASE_URL = '';       // es. 'https://abcdefgh.supabase.co'
-export const SUPABASE_ANON_KEY = '';  // es. 'eyJhbGciOi...' oppure 'sb_publishable_...'
+export const SUPABASE_URL = 'https://mnfandwgkekhlwputsqd.supabase.co';
+export const SUPABASE_ANON_KEY = 'sb_publishable_3khhJ3WIsHuLSziijdTJSA_dFUMek_X';
 
 // Versione dell'informativa privacy: viene salvata insieme al consenso,
 // così si sa quale testo ha accettato ogni utente.
