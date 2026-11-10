@@ -1,1 +1,134 @@
 
+[
+  {
+    "id": 1,
+    "nome": "Cena per 6 persone",
+    "input": "Organizza una cena per 6 adulti con pasta al pomodoro, pollo al forno e insalata. Calcola gli ingredienti necessari.",
+    "modalita_attesa": "calcolo_ingredienti",
+    "verifiche": [
+      "JSON valido",
+      "Quantità adeguate a 6 persone",
+      "Porzioni moderate per un menu completo",
+      "Ingredienti aggregati senza duplicati"
+    ]
+  },
+  {
+    "id": 2,
+    "nome": "Buffet per 40 persone",
+    "input": "Devo organizzare un buffet serale per 40 persone con pizzette, panini, rustici e torta. Calcola le quantità necessarie.",
+    "modalita_attesa": "calcolo_ingredienti",
+    "verifiche": [
+      "Porzioni adeguate a un buffet",
+      "Nessuna porzione completa di ogni pietanza per ogni invitato",
+      "Quantità realistiche",
+      "Assenza di sprechi eccessivi"
+    ]
+  },
+  {
+    "id": 3,
+    "nome": "Proposta menu economico",
+    "input": "Devo organizzare una cena per 10 persone. Non ho ancora scelto il menu. Suggeriscimi qualcosa di semplice ed economico e calcola gli ingredienti.",
+    "modalita_attesa": "proposta_menu",
+    "verifiche": [
+      "Menu completo e coerente",
+      "Ricette semplici ed economiche",
+      "Quantità per 10 persone",
+      "Ingredienti per tutte le portate"
+    ]
+  },
+  {
+    "id": 4,
+    "nome": "Menu vegetariano",
+    "input": "Suggeriscimi un menu vegetariano per un pranzo di 12 persone, con primo, secondo e contorno.",
+    "modalita_attesa": "proposta_menu",
+    "verifiche": [
+      "Assenza di carne e pesce",
+      "Menu equilibrato",
+      "Quantità per 12 persone",
+      "Ingredienti coerenti con le ricette"
+    ]
+  },
+  {
+    "id": 5,
+    "nome": "Evento con budget limitato",
+    "input": "Organizzo un buffet per 30 persone con un budget massimo di 100 euro. Proponimi un menu economico e calcola gli ingredienti.",
+    "modalita_attesa": "proposta_menu",
+    "verifiche": [
+      "Menu coerente con il budget indicato",
+      "Nessun prezzo inventato",
+      "Segnalazione dei limiti della stima economica",
+      "Quantità realistiche per 30 persone"
+    ]
+  },
+  {
+    "id": 6,
+    "nome": "Ingredienti già disponibili",
+    "input": "Devo preparare pasta al pomodoro per 8 persone. Ho già 500 g di pasta e 1 kg di passata di pomodoro. Calcola quanto mi manca.",
+    "modalita_attesa": "calcolo_ingredienti",
+    "verifiche": [
+      "Calcolo del fabbisogno totale",
+      "Considerazione degli ingredienti disponibili",
+      "Calcolo corretto delle quantità mancanti",
+      "Nessuna quantità negativa"
+    ]
+  },
+  {
+    "id": 7,
+    "nome": "Evento con bambini",
+    "input": "Suggerisci un menu per una festa con 25 invitati, di cui 10 bambini e 15 adulti. Vorrei pizza, stuzzichini e dolci.",
+    "modalita_attesa": "proposta_menu",
+    "verifiche": [
+      "Considerazione di adulti e bambini",
+      "Porzioni differenziate",
+      "Menu adatto alla festa",
+      "Ipotesi esplicite sulle porzioni"
+    ]
+  },
+  {
+    "id": 8,
+    "nome": "Allergie alimentari",
+    "input": "Organizza un buffet per 20 persone. Due invitati sono allergici alle arachidi e tre sono intolleranti al lattosio. Suggerisci un menu adatto.",
+    "modalita_attesa": "proposta_menu",
+    "verifiche": [
+      "Rispetto delle restrizioni alimentari",
+      "Segnalazione dei rischi di contaminazione",
+      "Nessuna garanzia assoluta di sicurezza",
+      "Quantità per 20 persone"
+    ]
+  },
+  {
+    "id": 9,
+    "nome": "Modifica del menu",
+    "contesto_precedente": {
+      "numero_invitati": 6,
+      "tipo_evento": "cena",
+      "menu": [
+        "Pasta al pomodoro",
+        "Pollo al forno",
+        "Insalata"
+      ]
+    },
+    "input": "Sostituisci il pollo al forno con una frittata di verdure e ricalcola gli ingredienti.",
+    "modalita_attesa": "modifica_menu",
+    "verifiche": [
+      "Mantenimento delle altre portate",
+      "Sostituzione del pollo",
+      "Ricalcolo completo degli ingredienti",
+      "Assenza degli ingredienti esclusivi del piatto rimosso"
+    ]
+  },
+  {
+    "id": 10,
+    "nome": "Informazioni insufficienti",
+    "input": "Voglio organizzare una festa. Dimmi quanto cibo comprare.",
+    "modalita_attesa": "calcolo_ingredienti",
+    "stato_atteso": "dati_insufficienti",
+    "verifiche": [
+      "Nessun numero di invitati inventato",
+      "Nessuna quantità arbitraria",
+      "Segnalazione delle informazioni mancanti",
+      "JSON valido anche in caso di dati insufficienti"
+    ]
+  }
+]
+
