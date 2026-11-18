@@ -1,40 +1,52 @@
--- 1. Tabelle Anagrafiche
+-- ==============================================================================
+-- SCHEMA DATABASE SUPABASE - FOOD RESCUE AGENT
+-- ==============================================================================
+
+-- 1. UTENTI E PROFILI
+CREATE TABLE profili (
+    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    is_admin BOOLEAN DEFAULT false,
+    creato_il TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE utente_fisico (
-    id_utente SERIAL PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    cognome VARCHAR(100) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL
+    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    nome TEXT NOT NULL,
+    cognome TEXT NOT NULL
 );
 
 CREATE TABLE utente_impresa (
-    id_impresa SERIAL PRIMARY KEY,
-    nome_impresa VARCHAR(150) NOT NULL,
-    posizione VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL
+    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    nome_impresa TEXT NOT NULL,
+    posizione TEXT NOT NULL
 );
 
-CREATE TABLE centro_raccolta (
-    id_centro SERIAL PRIMARY KEY,
-    nome_centro VARCHAR(150) NOT NULL,
-    posizione VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL
+
+-- 2. CENTRI E DONAZIONI
+CREATE TABLE centri (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    nome TEXT NOT NULL,
+    indirizzo TEXT NOT NULL,
+    citta TEXT NOT NULL,
+    email TEXT NOT NULL,
+    latitudine DOUBLE PRECISION NOT NULL,
+    longitudine DOUBLE PRECISION NOT NULL,
+    categorie_accettate TEXT[] NOT NULL,
+    ente_terzo_settore BOOLEAN NOT NULL,
+    creato_il TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    id_gestore UUID REFERENCES auth.users(id)
 );
 
--- 2. Entità Principali
 CREATE TABLE donazione (
-    id_donazione SERIAL PRIMARY KEY,
-    nome VARCHAR(150) NOT NULL,
-    categoria VARCHAR(100),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    nome TEXT NOT NULL,
+    categoria TEXT NOT NULL,
     data_scadenza DATE NOT NULL,
-    quantita DECIMAL(10, 2) NOT NULL,
-    data_donazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    id_donatore_fisico INT REFERENCES utente_fisico(id_utente),
-    id_donatore_impresa INT REFERENCES utente_impresa(id_impresa),
-    centro_raccolta INT REFERENCES centro_raccolta(id_centro),
+    quantita NUMERIC NOT NULL,
+    data_donazione TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    id_donatore_fisico UUID REFERENCES utente_fisico(id),
+    id_donatore_impresa UUID REFERENCES utente_impresa(id),
+    id_centro UUID REFERENCES centri(id),
     
     CONSTRAINT check_donatore_esclusivo CHECK (
         (id_donatore_fisico IS NOT NULL AND id_donatore_impresa IS NULL) OR
@@ -42,14 +54,15 @@ CREATE TABLE donazione (
     )
 );
 
+
+-- 3. EVENTI E INGREDIENTI
 CREATE TABLE evento (
-    id_evento SERIAL PRIMARY KEY,
-    numero_invitati INT NOT NULL,
-    budget DECIMAL(10, 2),
-    
-    id_utente INT REFERENCES utente_fisico(id_utente),
-    id_impresa INT REFERENCES utente_impresa(id_impresa),
-    id_centro INT REFERENCES centro_raccolta(id_centro),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    numero_invitati INTEGER NOT NULL,
+    budget NUMERIC,
+    id_utente UUID REFERENCES utente_fisico(id),
+    id_impresa UUID REFERENCES utente_impresa(id),
+    id_centro UUID REFERENCES centri(id),
     
     CONSTRAINT check_organizzatore_esclusivo CHECK (
         (id_utente IS NOT NULL AND id_impresa IS NULL AND id_centro IS NULL) OR
@@ -58,27 +71,26 @@ CREATE TABLE evento (
     )
 );
 
--- 3. Ingredienti e Tabella Ponte
 CREATE TABLE ingrediente (
-    id_ingrediente SERIAL PRIMARY KEY,
-    nome VARCHAR(150) NOT NULL
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    nome TEXT NOT NULL
 );
 
 CREATE TABLE ingrediente_evento (
-    id_evento INT REFERENCES evento(id_evento),
-    id_ingrediente INT REFERENCES ingrediente(id_ingrediente),
-    quantita DECIMAL(10, 2) NOT NULL,
-    unita VARCHAR(50) NOT NULL,
-    
+    id_evento UUID REFERENCES evento(id) ON DELETE CASCADE,
+    id_ingrediente UUID REFERENCES ingrediente(id) ON DELETE CASCADE,
+    quantita NUMERIC NOT NULL,
+    unita TEXT NOT NULL,
     PRIMARY KEY (id_evento, id_ingrediente)
 );
 
--- 4. Chat tra Utenti
+
+-- 4. CHAT TRA UTENTI
 CREATE TABLE conversazione (
-    id_conversazione SERIAL PRIMARY KEY,
-    id_centro INT NOT NULL REFERENCES centro_raccolta(id_centro),
-    id_utente INT REFERENCES utente_fisico(id_utente),
-    id_impresa INT REFERENCES utente_impresa(id_impresa),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_centro UUID NOT NULL REFERENCES centri(id),
+    id_utente UUID REFERENCES utente_fisico(id),
+    id_impresa UUID REFERENCES utente_impresa(id),
     
     CONSTRAINT check_donatore_chat_esclusivo CHECK (
         (id_utente IS NOT NULL AND id_impresa IS NULL) OR
@@ -87,24 +99,25 @@ CREATE TABLE conversazione (
 );
 
 CREATE TABLE messaggio (
-    id_messaggio SERIAL PRIMARY KEY,
-    id_conversazione INT REFERENCES conversazione(id_conversazione),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_conversazione UUID REFERENCES conversazione(id) ON DELETE CASCADE,
     testo TEXT NOT NULL,
-    timestamp_invio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    timestamp_invio TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     inviato_da_centro BOOLEAN NOT NULL
 );
 
--- 5. Chat con l'IA
+
+-- 5. CHAT IA (Organizzazione Eventi)
 CREATE TABLE chat_ia (
-    id_chat SERIAL PRIMARY KEY,
-    id_evento INT NOT NULL UNIQUE REFERENCES evento(id_evento),
-    data_creazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_evento UUID NOT NULL UNIQUE REFERENCES evento(id) ON DELETE CASCADE,
+    data_creazione TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE messaggio_ia (
-    id_messaggio_ia SERIAL PRIMARY KEY,
-    id_chat INT REFERENCES chat_ia(id_chat),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_chat UUID REFERENCES chat_ia(id) ON DELETE CASCADE,
     testo TEXT NOT NULL,
-    timestamp_invio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    timestamp_invio TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     inviato_da_ia BOOLEAN NOT NULL
 );
