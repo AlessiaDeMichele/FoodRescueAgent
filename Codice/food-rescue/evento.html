@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Calcola le quantità di ingredienti per il tuo evento senza sprechi.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Organizza un evento – Food Rescue</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- comune.js: HTTPS, menu e avviso demo (vale per tutte le pagine) -->
+  <script type="module" src="js/comune.js"></script>
+  <script type="module" src="js/evento.js"></script>
+</head>
+<body>
+  <a class="salta" href="#contenuto">Vai al contenuto</a>
+
+  <header class="testata">
+    <div class="contenitore testata-interna">
+      <a class="logo" href="index.html">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M6 26C6 13 15 6 27 5c0 13-7 21-19 21" fill="#1e5b43"/>
+          <path d="M8 24C13 18 18 14 23 10" stroke="#f4c542" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        </svg>
+        Food Rescue
+      </a>
+      <nav aria-label="Menu principale">
+        <ul class="menu">
+          <li><a href="mappa.html">Mappa dei centri</a></li>
+          <li><a href="evento.html">Organizza un evento</a></li>
+          <li data-solo="admin" hidden><a href="admin.html">Gestione centri</a></li>
+          <li data-solo="ospite"><a href="login.html">Accedi</a></li>
+          <li data-solo="ospite"><a class="bottone piccolo" href="registrazione.html">Registrati</a></li>
+          <li data-solo="utente" hidden><a href="profilo.html">Il mio profilo</a></li>
+          <li data-solo="utente" hidden><button type="button" class="link" id="esci">Esci</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenuto" class="contenitore">
+    <h1>Organizza un evento</h1>
+    <p>Indica l'evento e le pietanze che hai scelto. Da questi dati viene creato il JSON che l'assistente
+      userà per calcolare le quantità e la lista della spesa, togliendo quello che hai già in dispensa.</p>
+
+    <div class="evento-layout">
+      <form id="form-evento" novalidate>
+        <!-- Sezione A -->
+        <fieldset>
+          <legend>A · Dati dell'evento</legend>
+          <div class="campo">
+            <label for="tipo-evento">Tipo di evento <span class="obbligo">(obbligatorio)</span></label>
+            <select id="tipo-evento" required>
+              <option value="">Scegli…</option>
+              <option>Pranzo</option>
+              <option>Cena</option>
+              <option>Buffet</option>
+              <option>Aperitivo</option>
+              <option>Festa</option>
+            </select>
+          </div>
+          <div class="riga-campi">
+            <div class="campo">
+              <label for="totale-invitati">Numero totale di invitati <span class="obbligo">(obbligatorio)</span></label>
+              <input type="number" id="totale-invitati" min="1" max="10000" step="1" inputmode="numeric" required>
+            </div>
+            <div class="campo">
+              <label for="numero-bambini">Di cui bambini</label>
+              <input type="number" id="numero-bambini" min="0" step="1" value="0" inputmode="numeric">
+              <p class="aiuto">Un bambino conta come 0,65 porzioni.</p>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Sezione B -->
+        <fieldset>
+          <legend>B · Pietanze</legend>
+          <p class="nota">Per ogni piatto puoi inserire la tua ricetta. Se non ce l'hai, l'assistente ne propone una tradizionale.</p>
+          <ol id="elenco-pietanze" class="elenco-pietanze"></ol>
+          <button type="button" class="bottone secondario" id="aggiungi-pietanza">+ Aggiungi pietanza</button>
+        </fieldset>
+
+        <p id="messaggio" class="messaggio" role="status" hidden></p>
+
+        <div class="azioni">
+          <button type="submit" class="bottone">Genera il JSON</button>
+          <button type="reset" class="bottone secondario">Svuota il form</button>
+        </div>
+      </form>
+
+      <section aria-labelledby="titolo-json" class="evento-risultato">
+        <div class="riquadro">
+          <h2 id="titolo-json">JSON per l'assistente</h2>
+          <pre id="anteprima-json" class="codice" aria-live="polite"></pre>
+          <div class="azioni">
+            <button type="button" class="bottone piccolo secondario" id="copia-json" disabled>Copia</button>
+            <button type="button" class="bottone piccolo secondario" id="scarica-json" disabled>Scarica .json</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Modelli usati da evento.js per creare pietanze e ingredienti -->
+    <template id="modello-pietanza">
+      <li class="pietanza">
+        <div class="pietanza-testa">
+          <h3 class="pietanza-titolo">Pietanza</h3>
+          <button type="button" class="link pericolo" data-azione="rimuovi-pietanza">Rimuovi</button>
+        </div>
+        <div class="campo">
+          <label data-per="nome">Nome della pietanza <span class="obbligo">(obbligatorio)</span></label>
+          <input type="text" data-campo="nome" maxlength="150" placeholder="es. Pasta al forno" required>
+        </div>
+        <fieldset class="scelta">
+          <legend>Hai una ricetta di riferimento per questa pietanza?</legend>
+          <label class="spunta"><input type="radio" data-campo="ha-ricetta" value="no" checked> No, la propone l'assistente</label>
+          <label class="spunta"><input type="radio" data-campo="ha-ricetta" value="si"> Sì, la inserisco io</label>
+        </fieldset>
+        <div class="ricetta" hidden>
+          <div class="campo campo-corto">
+            <label data-per="persone">Per quante persone è tarata la tua ricetta?</label>
+            <input type="number" data-campo="persone" min="1" step="1" inputmode="numeric" placeholder="es. 4">
+          </div>
+          <h4>Ingredienti della ricetta</h4>
+          <ul class="elenco-ingredienti"></ul>
+          <button type="button" class="bottone piccolo secondario" data-azione="aggiungi-ingrediente">+ Aggiungi ingrediente</button>
+        </div>
+      </li>
+    </template>
+
+    <template id="modello-ingrediente">
+      <li class="ingrediente">
+        <div class="ingrediente-riga">
+          <div class="campo">
+            <label data-per="nome-ing">Ingrediente</label>
+            <input type="text" data-campo="nome-ing" maxlength="150" placeholder="es. Rigatoni">
+          </div>
+          <div class="campo">
+            <label data-per="quantita">Quantità</label>
+            <input type="number" data-campo="quantita" min="0" step="any" inputmode="decimal">
+          </div>
+          <div class="campo">
+            <label data-per="unita">Unità</label>
+            <select data-campo="unita">
+              <option value="g">g</option>
+              <option value="ml">ml</option>
+              <option value="pz">pz</option>
+              <option value="cucchiai">cucchiai</option>
+              <option value="q.b.">q.b.</option>
+            </select>
+          </div>
+          <button type="button" class="link pericolo" data-azione="rimuovi-ingrediente" aria-label="Rimuovi ingrediente">✕</button>
+        </div>
+        <div class="dispensa">
+          <label class="spunta"><input type="checkbox" data-campo="disponibile"> Già disponibile in dispensa</label>
+          <div class="campo campo-corto" hidden>
+            <label data-per="qta-disp">Quantità che hai già</label>
+            <input type="number" data-campo="qta-disp" min="0" step="any" inputmode="decimal">
+          </div>
+        </div>
+      </li>
+    </template>
+  </main>
+
+  <footer class="piede">
+    <div class="contenitore piede-interno">
+      <p>Food Rescue Agent – progetto contro lo spreco alimentare.</p>
+      <p><a href="privacy.html">Informativa privacy</a></p>
+    </div>
+  </footer>
+</body>
+</html>

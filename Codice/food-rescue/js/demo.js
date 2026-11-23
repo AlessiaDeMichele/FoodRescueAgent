@@ -196,11 +196,14 @@ export function creaClientDemo() {
 
     functions: {
       // Simula la Edge Function "elimina-account" che scriverà il backend
-      async invoke(nome) {
+      async invoke(nome, opzioni = {}) {
         await attesa(500);
         const utenti = leggiUtenti();
         const user = utenteDiSessione(utenti);
         if (!user) return errore('Accesso richiesto');
+        if (nome === 'organizza-evento') {
+          return { data: { ok: true, risposta: rispostaEventoDemo(opzioni.body) }, error: null };
+        }
         if (nome === 'elimina-account') {
           salvaUtenti(utenti.filter((u) => u.id !== user.id));
           impostaSessione(null);
@@ -210,4 +213,50 @@ export function creaClientDemo() {
       },
     },
   };
+}
+
+// Finta risposta dell'IA per evento.html: applica soltanto i calcoli del
+// prompt di sistema (P_eq, fattore K, dispensa). Le ricette mancanti le
+// propone solo l'IA vera, collegata tramite la Edge Function "organizza-evento".
+function rispostaEventoDemo({ evento, pietanze }) {
+  const num = (n) => (Math.round(n * 100) / 100).toLocaleString('it-IT');
+  const adulti = evento.totale_invitati - evento.numero_bambini;
+  const peq = adulti + evento.numero_bambini * 0.65;
+  const righe = [
+    '> **Modalità demo:** risposta simulata, l\'IA non è collegata.',
+    '',
+    '## Riepilogo evento',
+    `- Tipo: ${evento.tipo_evento}`,
+    `- Invitati: ${evento.totale_invitati} (${adulti} adulti, ${evento.numero_bambini} bambini)`,
+    `- P_eq = ${adulti} × 1,0 + ${evento.numero_bambini} × 0,65 = **${num(peq)}**`,
+    '',
+    '## Dettaglio pietanze',
+  ];
+  const spesa = [];
+  for (const p of pietanze) {
+    righe.push('', `### ${p.nome_pietanza}`);
+    if (!p.ha_ricetta_utente) {
+      righe.push('*Ricetta stimata dall\'agente (non avendo ricevuto una base di riferimento).* In demo non viene generata.');
+      continue;
+    }
+    const k = peq / p.persone_riferimento;
+    righe.push(`K = ${num(peq)} / ${p.persone_riferimento} = **${num(k)}**`, '');
+    for (const i of p.ingredienti) {
+      if (i.unita_misura === 'q.b.') {
+        righe.push(`- ${i.nome_ingrediente}: q.b.`);
+        continue;
+      }
+      const totale = i.quantita_base * k;
+      const daComprare = Math.max(0, totale - (i.gia_disponibile ? i.quantita_disponibile : 0));
+      righe.push(`- ${i.nome_ingrediente}: ${num(i.quantita_base)} × ${num(k)} = ${num(totale)} ${i.unita_misura}`);
+      spesa.push(`| ${i.nome_ingrediente} | ${num(totale)} ${i.unita_misura} | ${num(i.quantita_disponibile)} ${i.unita_misura} | ${num(daComprare)} ${i.unita_misura} |`);
+    }
+  }
+  righe.push('', '## Lista della spesa', '');
+  if (spesa.length) {
+    righe.push('| Ingrediente | Fabbisogno | In dispensa | Da comprare |', '|---|---|---|---|', ...spesa);
+  } else {
+    righe.push('Nessun ingrediente calcolabile in demo.');
+  }
+  return righe.join('\n');
 }

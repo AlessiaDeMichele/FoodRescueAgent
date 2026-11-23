@@ -16,6 +16,49 @@ Sito statico in HTML, CSS e JavaScript, collegato a Supabase.
 | `profilo.html` | Dati dell'account, consenso newsletter, download dei dati, eliminazione account |
 | `mappa.html` | Mappa interattiva dei centri, filtro per alimenti, elenco, "più vicini a me" (aperta a tutti) |
 | `admin.html` | Inserire, modificare ed eliminare i centri (solo amministratori) |
+| `evento.html` | Form "Organizza un evento": crea il JSON con evento e pietanze (per ora solo da copiare o scaricare) |
+
+## Organizza un evento (form → JSON → IA)
+
+**Stato attuale:** la pagina genera solo il JSON (si può copiare o scaricare come `evento.json`).
+Non chiede l'accesso e non è ancora collegata né all'IA né al database. Da fare più avanti:
+- accesso: in `js/evento.js` importare `richiediLogin` da `auth.js` e chiamarlo all'inizio; nel menu delle pagine rimettere `data-solo="utente" hidden` sulla voce "Organizza un evento";
+- IA: inviare il JSON con `supabase.functions.invoke('organizza-evento', { body: json })` e mostrare `data.risposta` (Markdown). La funzione è già pronta, vedi sotto.
+
+1. L'utente compila `evento.html`: tipo di evento, invitati, bambini e le pietanze.
+   Per ogni pietanza può inserire la propria ricetta (persone di riferimento, ingredienti, dispensa) oppure lasciarla all'IA.
+2. `js/evento.js` controlla i dati e costruisce questo JSON (il bottone "Genera il JSON" lo mostra):
+
+```json
+{
+  "evento": { "tipo_evento": "Cena", "totale_invitati": 10, "numero_bambini": 2 },
+  "pietanze": [
+    { "nome_pietanza": "Pasta al forno", "ha_ricetta_utente": true, "persone_riferimento": 4,
+      "ingredienti": [
+        { "nome_ingrediente": "Rigatoni", "quantita_base": 400, "unita_misura": "g", "gia_disponibile": false, "quantita_disponibile": 0 }
+      ] },
+    { "nome_pietanza": "Pollo al forno con patate", "ha_ricetta_utente": false, "persone_riferimento": null, "ingredienti": [] }
+  ]
+}
+```
+
+   Unità ammesse: `g`, `ml`, `pz`, `cucchiai`, `q.b.` (con `q.b.` la quantità vale 0).
+3. Il JSON va alla Edge Function `organizza-evento` (`supabase/functions/organizza-evento/`), che lo ricontrolla,
+   aggiunge il prompt di sistema (`AI/system_prompt.txt`) e chiede all'IA il calcolo. La risposta (Markdown) compare nella pagina.
+
+L'IA è servita da **Groq** (chiave da https://console.groq.com/keys). La chiave **non** va nel sito: sta solo nei secret di Supabase. Chi gestisce il backend esegue:
+
+```
+supabase secrets set GROQ_API_KEY=la-chiave
+supabase functions deploy organizza-evento
+```
+
+Modello predefinito: `openai/gpt-oss-120b`, che Groq indica come sostituto di `llama-3.3-70b-versatile`.
+I modelli Llama sono stati dismessi per i piani gratuito e Developer (spenti il 16/08/2026).
+Per usare un altro modello senza toccare il codice: `supabase secrets set GROQ_MODEL=nome-del-modello`.
+
+`system_prompt.ts` nella cartella della funzione è una copia di `AI/system_prompt.txt`: se cambiate il prompt, aggiornate entrambi.
+In modalità demo la pagina risponde con un calcolo simulato (P_eq, fattore K, dispensa) senza chiamare l'IA.
 
 ## Come avviarlo sul tuo computer
 

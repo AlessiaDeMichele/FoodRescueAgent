@@ -278,3 +278,36 @@ dialog h2 { margin-top: 0; }
 @media (prefers-reduced-motion: reduce) {
   .etichetta { transform: none; }
 }
+
+/* ---------- Organizza un evento (evento.html) ---------- */
+.evento-layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; align-items: start; }
+.evento-layout > * { min-width: 0; }
+.evento-layout form { margin-top: 0; }
+.evento-risultato .riquadro { margin-top: 0; margin-bottom: 1.5rem; }
+.elenco-pietanze { list-style: none; padding: 0; margin: 0 0 1rem; }
+.pietanza { border: 1px solid var(--bordo); border-left: 4px solid var(--verde); border-radius: var(--raggio); padding: 0.75rem 1rem 1rem; margin-bottom: 1rem; background: var(--carta); }
+.pietanza-testa { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+.pietanza-titolo { margin: 0 0 0.75rem; }
+.pietanza fieldset.scelta { border: 0; padding: 0; margin: 0 0 0.75rem; background: none; }
+.pietanza fieldset.scelta legend { padding: 0; font-weight: 600; margin-bottom: 0.2rem; }
+.pietanza h4 { margin: 0.5rem 0; font-size: 1rem; }
+.campo-corto { max-width: 260px; }
+.elenco-ingredienti { list-style: none; padding: 0; margin: 0 0 0.75rem; }
+.ingrediente { background: var(--bianco); border: 1px solid var(--bordo); border-radius: var(--raggio); padding: 0.6rem 0.75rem; margin-bottom: 0.6rem; }
+.ingrediente-riga { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 0 0.75rem; align-items: end; }
+.ingrediente-riga .campo { margin-bottom: 0.4rem; }
+.ingrediente-riga .link { padding-bottom: 0.9rem; }
+.ingrediente .spunta { margin: 0.2rem 0; }
+.ingrediente .dispensa .campo { margin: 0.3rem 0 0; }
+input:disabled { background: var(--verde-chiaro); color: var(--grigio); }
+.codice { background: var(--inchiostro); color: #e3efe7; padding: 1rem; border-radius: var(--raggio); overflow-x: auto; font-size: 0.85rem; max-height: 420px; white-space: pre; }
+.risposta-ia h1, .risposta-ia h2 { font-size: 1.2rem; margin: 1.25rem 0 0.5rem; }
+.risposta-ia h3 { font-size: 1.05rem; }
+.risposta-ia > :first-child { margin-top: 0; }
+.risposta-ia .tabella-scorri { margin: 0.5rem 0 1rem; }
+
+@media (max-width: 860px) {
+  .evento-layout { grid-template-columns: 1fr; }
+  .ingrediente-riga { grid-template-columns: 1fr 1fr; }
+  .ingrediente-riga .campo:first-child { grid-column: 1 / -1; }
+}
