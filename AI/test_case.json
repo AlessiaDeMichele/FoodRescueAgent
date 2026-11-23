@@ -1,0 +1,24 @@
+{
+  "evento": {
+    "tipo_evento": "Cena",
+    "totale_invitati": 10,
+    "numero_bambini": 2
+  },
+  "pietanze": [
+    {
+      "nome_pietanza": "Pasta al forno",
+      "ha_ricetta_utente": true,
+      "persone_riferimento": 4,
+      "ingredienti": [
+        { "nome_ingrediente": "Rigatoni", "quantita_base": 400, "unita_misura": "g", "gia_disponibile": false, "quantita_disponibile": 0 },
+        { "nome_ingrediente": "Passata di pomodoro", "quantita_base": 700, "unita_misura": "g", "gia_disponibile": true, "quantita_disponibile": 500 }
+      ]
+    },
+    {
+      "nome_pietanza": "Pollo al forno con patate",
+      "ha_ricetta_utente": false,
+      "persone_riferimento": null,
+      "ingredienti": []
+    }
+  ]
+}
