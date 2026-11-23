@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Organizza un evento – Food Rescue</title>
+  <!--
+    Pagina autonoma: form "Organizza un evento" che produce il JSON
+    da inviare all'IA. Nessun collegamento all'IA né al database:
+    il JSON viene solo mostrato, copiato o scaricato.
+    Si apre anche con doppio clic (non usa moduli JavaScript).
+  -->
+  <style>
+    :root {
+      --verde: #1e5b43;
+      --verde-scuro: #143f2e;
+      --verde-chiaro: #e3efe7;
+      --pomodoro: #b3321f;
+      --pomodoro-chiaro: #fbe9e5;
+      --carta: #f6f8f5;
+      --bianco: #ffffff;
+      --inchiostro: #17221d;
+      --grigio: #56625b;
+      --bordo: #d3dcd6;
+      --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --raggio: 10px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; font-family: var(--font); color: var(--inchiostro); background: var(--carta); line-height: 1.5; }
+    main { width: min(100% - 2rem, 1120px); margin: 0 auto; padding-bottom: 3rem; }
+    h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); margin: 2rem 0 0.75rem; line-height: 1.15; }
+    h2 { font-size: 1.3rem; margin: 0 0 0.75rem; }
+    h3 { font-size: 1.1rem; margin: 0 0 0.75rem; }
+    h4 { margin: 0.5rem 0; font-size: 1rem; }
+    p { margin: 0 0 1rem; max-width: 70ch; }
+
+    .bottone { display: inline-block; font: inherit; font-weight: 600; padding: 0.6rem 1.2rem; border-radius: var(--raggio);
+      border: 2px solid var(--verde); background: var(--verde); color: var(--bianco); cursor: pointer; }
+    .bottone:hover { background: var(--verde-scuro); border-color: var(--verde-scuro); }
+    .bottone.secondario { background: transparent; color: var(--verde); }
+    .bottone.secondario:hover { background: var(--verde-chiaro); }
+    .bottone.piccolo { padding: 0.35rem 0.8rem; font-size: 0.95rem; }
+    .link { background: none; border: 0; padding: 0; font: inherit; color: var(--verde); text-decoration: underline; cursor: pointer; }
+    .link.pericolo { color: var(--pomodoro); }
+    .azioni { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1.25rem 0; }
+
+    fieldset { border: 1px solid var(--bordo); border-radius: var(--raggio); padding: 1rem 1.25rem 1.25rem; margin: 0 0 1.5rem; background: var(--bianco); }
+    legend { font-weight: 700; padding: 0 0.4rem; }
+    .campo { margin-bottom: 1rem; }
+    .campo label { display: block; font-weight: 600; margin-bottom: 0.3rem; }
+    input[type="text"], input[type="number"], select {
+      width: 100%; font: inherit; padding: 0.55rem 0.7rem; border: 2px solid var(--bordo); border-radius: var(--raggio); background: var(--bianco); outline: none; }
+    input:focus, select:focus { border-color: var(--verde); }
+    input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--pomodoro); }
+    input:disabled { background: var(--verde-chiaro); color: var(--grigio); }
+    .spunta { display: flex; gap: 0.6rem; align-items: flex-start; margin: 0.4rem 0; font-weight: 400 !important; cursor: pointer; }
+    .spunta input { width: 1.2rem; height: 1.2rem; margin-top: 0.15rem; flex-shrink: 0; accent-color: var(--verde); }
+    .obbligo, .nota, .aiuto { font-size: 0.9rem; color: var(--grigio); font-weight: 400; }
+    .aiuto { margin: 0.3rem 0 0; }
+    .riga-campi { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1rem; }
+
+    .messaggio { padding: 0.75rem 1rem; border-radius: var(--raggio); margin: 1rem 0; max-width: none; }
+    .messaggio.errore { background: var(--pomodoro-chiaro); border-left: 4px solid var(--pomodoro); }
+    .messaggio.successo { background: var(--verde-chiaro); border-left: 4px solid var(--verde); }
+
+    .layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; align-items: start; }
+    .layout > * { min-width: 0; }
+    .riquadro { background: var(--bianco); border: 1px solid var(--bordo); border-radius: var(--raggio); padding: 1.25rem; position: sticky; top: 1rem; }
+
+    .elenco-pietanze { list-style: none; padding: 0; margin: 0 0 1rem; }
+    .pietanza { border: 1px solid var(--bordo); border-left: 4px solid var(--verde); border-radius: var(--raggio); padding: 0.75rem 1rem 1rem; margin-bottom: 1rem; background: var(--carta); }
+    .pietanza-testa { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+    .pietanza fieldset.scelta { border: 0; padding: 0; margin: 0 0 0.75rem; background: none; }
+    .pietanza fieldset.scelta legend { padding: 0; font-weight: 600; margin-bottom: 0.2rem; }
+    .campo-corto { max-width: 260px; }
+    .elenco-ingredienti { list-style: none; padding: 0; margin: 0 0 0.75rem; }
+    .ingrediente { background: var(--bianco); border: 1px solid var(--bordo); border-radius: var(--raggio); padding: 0.6rem 0.75rem; margin-bottom: 0.6rem; }
+    .ingrediente-riga { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 0 0.75rem; align-items: end; }
+    .ingrediente-riga .campo { margin-bottom: 0.4rem; }
+    .ingrediente-riga .link { padding-bottom: 0.9rem; text-decoration: none; font-size: 1.1rem; }
+    .dispensa .campo { margin: 0.3rem 0 0; }
+
+    .codice { background: var(--inchiostro); color: #e3efe7; padding: 1rem; border-radius: var(--raggio); overflow: auto;
+      font-size: 0.85rem; max-height: 65vh; white-space: pre; margin: 0 0 1rem; min-height: 4rem; }
+
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .riquadro { position: static; }
+      .riga-campi { grid-template-columns: 1fr; }
+      .ingrediente-riga { grid-template-columns: 1fr 1fr; }
+      .ingrediente-riga .campo:first-child { grid-column: 1 / -1; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Organizza un evento</h1>
+    <p>Indica l'evento e le pietanze che hai scelto. Per ogni piatto puoi inserire la tua ricetta;
+      se non ce l'hai, sarà l'assistente a proporne una tradizionale.</p>
+
+    <div class="layout">
+      <form id="form-evento" novalidate>
+        <!-- Sezione A — Dati generali evento -->
+        <fieldset>
+          <legend>A · Dati dell'evento</legend>
+          <div class="campo">
+            <label for="tipo-evento">Tipo di evento <span class="obbligo">(obbligatorio)</span></label>
+            <select id="tipo-evento" required>
+              <option value="">Scegli…</option>
+              <option>Pranzo</option>
+              <option>Cena</option>
+              <option>Buffet</option>
+              <option>Aperitivo</option>
+              <option>Festa</option>
+            </select>
+          </div>
+          <div class="riga-campi">
+            <div class="campo">
+              <label for="totale-invitati">Numero totale di invitati <span class="obbligo">(obbligatorio)</span></label>
+              <input type="number" id="totale-invitati" min="1" step="1" inputmode="numeric" required>
+            </div>
+            <div class="campo">
+              <label for="numero-bambini">Di cui bambini</label>
+              <input type="number" id="numero-bambini" min="0" step="1" value="0" inputmode="numeric">
+              <p class="aiuto">Un bambino conta come 0,65 porzioni.</p>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Sezione B — Pietanze -->
+        <fieldset>
+          <legend>B · Pietanze</legend>
+          <ol id="elenco-pietanze" class="elenco-pietanze"></ol>
+          <button type="button" class="bottone secondario" id="aggiungi-pietanza">+ Aggiungi pietanza</button>
+        </fieldset>
+
+        <p id="messaggio" class="messaggio" role="status" hidden></p>
+
+        <div class="azioni">
+          <button type="submit" class="bottone">Genera il JSON</button>
+          <button type="reset" class="bottone secondario" id="svuota">Svuota il form</button>
+        </div>
+      </form>
+
+      <section class="riquadro" aria-labelledby="titolo-json">
+        <h2 id="titolo-json">JSON per l'assistente</h2>
+        <pre id="anteprima-json" class="codice">Compila il form e premi "Genera il JSON".</pre>
+        <div class="azioni" style="margin: 0;">
+          <button type="button" class="bottone piccolo secondario" id="copia-json" disabled>Copia</button>
+          <button type="button" class="bottone piccolo secondario" id="scarica-json" disabled>Scarica .json</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Modelli usati dallo script per creare pietanze e ingredienti -->
+    <template id="modello-pietanza">
+      <li class="pietanza">
+        <div class="pietanza-testa">
+          <h3 class="pietanza-titolo">Pietanza</h3>
+          <button type="button" class="link pericolo" data-azione="rimuovi-pietanza">Rimuovi</button>
+        </div>
+        <div class="campo">
+          <label data-per="nome">Nome della pietanza <span class="obbligo">(obbligatorio)</span></label>
+          <input type="text" data-campo="nome" maxlength="150" placeholder="es. Pasta al forno">
+        </div>
+        <fieldset class="scelta">
+          <legend>Hai una ricetta di riferimento per questa pietanza?</legend>
+          <label class="spunta"><input type="radio" data-campo="ha-ricetta" value="no" checked> No, la propone l'assistente</label>
+          <label class="spunta"><input type="radio" data-campo="ha-ricetta" value="si"> Sì, la inserisco io</label>
+        </fieldset>
+        <div class="ricetta" hidden>
+          <div class="campo campo-corto">
+            <label data-per="persone">Per quante persone è tarata la tua ricetta?</label>
+            <input type="number" data-campo="persone" min="1" step="1" inputmode="numeric" placeholder="es. 4">
+          </div>
+          <h4>Ingredienti della ricetta</h4>
+          <ul class="elenco-ingredienti"></ul>
+          <button type="button" class="bottone piccolo secondario" data-azione="aggiungi-ingrediente">+ Aggiungi ingrediente</button>
+        </div>
+      </li>
+    </template>
+
+    <template id="modello-ingrediente">
+      <li class="ingrediente">
+        <div class="ingrediente-riga">
+          <div class="campo">
+            <label data-per="nome-ing">Ingrediente</label>
+            <input type="text" data-campo="nome-ing" maxlength="150" placeholder="es. Rigatoni">
+          </div>
+          <div class="campo">
+            <label data-per="quantita">Quantità</label>
+            <input type="number" data-campo="quantita" min="0" step="any" inputmode="decimal">
+          </div>
+          <div class="campo">
+            <label data-per="unita">Unità</label>
+            <select data-campo="unita">
+              <option value="g">g</option>
+              <option value="ml">ml</option>
+              <option value="pz">pz</option>
+              <option value="cucchiai">cucchiai</option>
+              <option value="q.b.">q.b.</option>
+            </select>
+          </div>
+          <button type="button" class="link pericolo" data-azione="rimuovi-ingrediente" aria-label="Rimuovi ingrediente">✕</button>
+        </div>
+        <div class="dispensa">
+          <label class="spunta"><input type="checkbox" data-campo="disponibile"> Già disponibile in dispensa</label>
+          <div class="campo campo-corto" hidden>
+            <label data-per="qta-disp">Quantità che hai già</label>
+            <input type="number" data-campo="qta-disp" min="0" step="any" inputmode="decimal">
+          </div>
+        </div>
+      </li>
+    </template>
+  </main>
+
+  <script>
+    'use strict';
+
+    const UNITA_SENZA_QUANTITA = 'q.b.';
+
+    const form = document.getElementById('form-evento');
+    const elencoPietanze = document.getElementById('elenco-pietanze');
+    const modelloPietanza = document.getElementById('modello-pietanza');
+    const modelloIngrediente = document.getElementById('modello-ingrediente');
+    const messaggio = document.getElementById('messaggio');
+    const anteprima = document.getElementById('anteprima-json');
+    const bottoneCopia = document.getElementById('copia-json');
+    const bottoneScarica = document.getElementById('scarica-json');
+    const campoTipo = document.getElementById('tipo-evento');
+    const campoInvitati = document.getElementById('totale-invitati');
+    const campoBambini = document.getElementById('numero-bambini');
+
+    let contatore = 0;     // per creare id unici
+    let ultimoJson = null; // ultimo JSON generato
+
+    // ---------- Messaggi ----------
+    function mostraMessaggio(testo, tipo) {
+      messaggio.textContent = testo;
+      messaggio.className = 'messaggio ' + tipo;
+      messaggio.hidden = false;
+      messaggio.setAttribute('role', tipo === 'errore' ? 'alert' : 'status');
+    }
+    function nascondiMessaggio() { messaggio.hidden = true; messaggio.textContent = ''; }
+
+    // ---------- Righe dinamiche ----------
+    // Collega ogni <label data-per="x"> al suo campo data-campo="x"
+    function collegaEtichette(radice) {
+      radice.querySelectorAll('label[data-per]').forEach((label) => {
+        const campo = radice.querySelector('[data-campo="' + label.dataset.per + '"]');
+        campo.id = 'c' + (++contatore);
+        label.htmlFor = campo.id;
+      });
+    }
+
+    function aggiungiPietanza(focus = true) {
+      const pietanza = modelloPietanza.content.firstElementChild.cloneNode(true);
+      collegaEtichette(pietanza);
+      const gruppo = 'ricetta' + (++contatore); // radio Sì/No con name diverso per ogni pietanza
+      pietanza.querySelectorAll('[data-campo="ha-ricetta"]').forEach((r) => (r.name = gruppo));
+      elencoPietanze.append(pietanza);
+      rinumera();
+      if (focus) pietanza.querySelector('[data-campo="nome"]').focus();
+    }
+
+    function aggiungiIngrediente(pietanza) {
+      const riga = modelloIngrediente.content.firstElementChild.cloneNode(true);
+      collegaEtichette(riga);
+      pietanza.querySelector('.elenco-ingredienti').append(riga);
+      return riga;
+    }
+
+    function rinumera() {
+      const pietanze = elencoPietanze.querySelectorAll('.pietanza');
+      pietanze.forEach((p, i) => {
+        p.querySelector('.pietanza-titolo').textContent = 'Pietanza ' + (i + 1);
+        p.querySelector('[data-azione="rimuovi-pietanza"]').hidden = pietanze.length === 1;
+      });
+    }
+
+    document.getElementById('aggiungi-pietanza').addEventListener('click', () => aggiungiPietanza());
+
+    elencoPietanze.addEventListener('click', (ev) => {
+      const bottone = ev.target.closest('[data-azione]');
+      if (!bottone) return;
+      const pietanza = bottone.closest('.pietanza');
+      const azione = bottone.dataset.azione;
+
+      if (azione === 'rimuovi-pietanza') {
+        pietanza.remove();
+        rinumera();
+      } else if (azione === 'aggiungi-ingrediente') {
+        aggiungiIngrediente(pietanza).querySelector('[data-campo="nome-ing"]').focus();
+      } else if (azione === 'rimuovi-ingrediente') {
+        const elenco = bottone.closest('.elenco-ingredienti');
+        bottone.closest('.ingrediente').remove();
+        if (!elenco.children.length) aggiungiIngrediente(pietanza); // almeno una riga
+      }
+    });
+
+    elencoPietanze.addEventListener('change', (ev) => {
+      const campo = ev.target.dataset.campo;
+
+      if (campo === 'ha-ricetta') {
+        const pietanza = ev.target.closest('.pietanza');
+        const conRicetta = ev.target.value === 'si';
+        pietanza.querySelector('.ricetta').hidden = !conRicetta;
+        if (conRicetta && !pietanza.querySelector('.ingrediente')) aggiungiIngrediente(pietanza);
+      }
+      if (campo === 'disponibile') {
+        const box = ev.target.closest('.dispensa').querySelector('.campo');
+        box.hidden = !ev.target.checked;
+        if (ev.target.checked) box.querySelector('input').focus();
+      }
+      if (campo === 'unita') {
+        const quantita = ev.target.closest('.ingrediente').querySelector('[data-campo="quantita"]');
+        const qb = ev.target.value === UNITA_SENZA_QUANTITA; // "q.b." non ha quantità
+        quantita.disabled = qb;
+        if (qb) quantita.value = '';
+      }
+    });
+
+    // ---------- Form → JSON ----------
+    const vuoto = (input) => input.value.trim() === '';
+
+    function errore(input, testo) {
+      input.setAttribute('aria-invalid', 'true');
+      input.focus();
+      return { errore: testo };
+    }
+
+    // Restituisce { json } oppure { errore } con il primo problema trovato
+    function costruisciJson() {
+      form.querySelectorAll('[aria-invalid]').forEach((el) => el.removeAttribute('aria-invalid'));
+
+      const totale = Number(campoInvitati.value);
+      const bambini = vuoto(campoBambini) ? 0 : Number(campoBambini.value);
+
+      if (!campoTipo.value) return errore(campoTipo, 'Scegli il tipo di evento.');
+      if (vuoto(campoInvitati) || !Number.isInteger(totale) || totale < 1) {
+        return errore(campoInvitati, 'Il numero di invitati deve essere un numero intero, almeno 1.');
+      }
+      if (!Number.isInteger(bambini) || bambini < 0) {
+        return errore(campoBambini, 'Il numero di bambini deve essere un numero intero, non negativo.');
+      }
+      if (bambini > totale) {
+        return errore(campoBambini, 'I bambini non possono essere più degli invitati totali.');
+      }
+
+      const pietanze = [];
+      const elementi = elencoPietanze.querySelectorAll('.pietanza');
+      for (let n = 0; n < elementi.length; n++) {
+        const el = elementi[n];
+        const inputNome = el.querySelector('[data-campo="nome"]');
+        const nome = inputNome.value.trim();
+        if (!nome) return errore(inputNome, 'Pietanza ' + (n + 1) + ': inserisci il nome del piatto.');
+
+        const haRicetta = el.querySelector('[data-campo="ha-ricetta"]:checked').value === 'si';
+        if (!haRicetta) {
+          pietanze.push({ nome_pietanza: nome, ha_ricetta_utente: false, persone_riferimento: null, ingredienti: [] });
+          continue;
+        }
+
+        const inputPersone = el.querySelector('[data-campo="persone"]');
+        const persone = Number(inputPersone.value);
+        if (vuoto(inputPersone) || !Number.isInteger(persone) || persone < 1) {
+          return errore(inputPersone, '"' + nome + '": indica per quante persone è la ricetta (numero intero, almeno 1).');
+        }
+
+        const ingredienti = [];
+        const nomiVisti = new Set(); // nel database ogni ingrediente compare una sola volta per pietanza
+        for (const riga of el.querySelectorAll('.ingrediente')) {
+          const inputIng = riga.querySelector('[data-campo="nome-ing"]');
+          const inputQta = riga.querySelector('[data-campo="quantita"]');
+          const unita = riga.querySelector('[data-campo="unita"]').value;
+          const disponibile = riga.querySelector('[data-campo="disponibile"]').checked;
+          const inputDisp = riga.querySelector('[data-campo="qta-disp"]');
+          const nomeIng = inputIng.value.trim();
+
+          if (!nomeIng && vuoto(inputQta) && !disponibile) continue; // riga vuota: ignorata
+          if (!nomeIng) return errore(inputIng, '"' + nome + '": manca il nome di un ingrediente.');
+          const chiave = nomeIng.toLowerCase().replace(/\s+/g, ' ');
+          if (nomiVisti.has(chiave)) {
+            return errore(inputIng, '"' + nome + '": l\'ingrediente "' + nomeIng + '" è inserito due volte. Unisci le quantità in una sola riga.');
+          }
+          nomiVisti.add(chiave);
+
+          let quantita = 0;
+          if (unita !== UNITA_SENZA_QUANTITA) {
+            quantita = Number(inputQta.value);
+            if (vuoto(inputQta) || !(quantita > 0)) {
+              return errore(inputQta, '"' + nomeIng + '": inserisci una quantità maggiore di 0 (oppure scegli q.b.).');
+            }
+          }
+
+          let quantitaDisponibile = 0;
+          if (disponibile) {
+            quantitaDisponibile = Number(inputDisp.value);
+            if (vuoto(inputDisp) || !(quantitaDisponibile >= 0)) {
+              return errore(inputDisp, '"' + nomeIng + '": indica quanto ne hai già in dispensa.');
+            }
+          }
+
+          ingredienti.push({
+            nome_ingrediente: nomeIng,
+            quantita_base: quantita,
+            unita_misura: unita,
+            gia_disponibile: disponibile,
+            quantita_disponibile: quantitaDisponibile,
+          });
+        }
+
+        if (!ingredienti.length) {
+          return errore(el.querySelector('[data-campo="nome-ing"]'),
+            '"' + nome + '": inserisci almeno un ingrediente oppure scegli "No".');
+        }
+        pietanze.push({ nome_pietanza: nome, ha_ricetta_utente: true, persone_riferimento: persone, ingredienti });
+      }
+
+      return {
+        json: {
+          evento: { tipo_evento: campoTipo.value, totale_invitati: totale, numero_bambini: bambini },
+          pietanze,
+        },
+      };
+    }
+
+    form.addEventListener('submit', (ev) => {
+      ev.preventDefault();
+      nascondiMessaggio();
+      const risultato = costruisciJson();
+      if (risultato.errore) return mostraMessaggio(risultato.errore, 'errore');
+
+      ultimoJson = JSON.stringify(risultato.json, null, 2);
+      anteprima.textContent = ultimoJson;
+      bottoneCopia.disabled = false;
+      bottoneScarica.disabled = false;
+      mostraMessaggio('JSON generato correttamente.', 'successo');
+      if (window.matchMedia('(max-width: 860px)').matches) anteprima.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    form.addEventListener('reset', () => {
+      // Dopo il reset nativo, ripartiamo da una sola pietanza vuota
+      setTimeout(() => {
+        elencoPietanze.replaceChildren();
+        aggiungiPietanza(false);
+        nascondiMessaggio();
+        ultimoJson = null;
+        anteprima.textContent = 'Compila il form e premi "Genera il JSON".';
+        bottoneCopia.disabled = true;
+        bottoneScarica.disabled = true;
+      });
+    });
+
+    // ---------- Copia e download ----------
+    bottoneCopia.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(ultimoJson);
+        bottoneCopia.textContent = 'Copiato';
+      } catch {
+        bottoneCopia.textContent = 'Copia non riuscita';
+      }
+      setTimeout(() => (bottoneCopia.textContent = 'Copia'), 1500);
+    });
+
+    bottoneScarica.addEventListener('click', () => {
+      const url = URL.createObjectURL(new Blob([ultimoJson], { type: 'application/json' }));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'evento.json';
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    });
+
+    aggiungiPietanza(false);
+  </script>
+</body>
+</html>
