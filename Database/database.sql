@@ -55,11 +55,14 @@ CREATE TABLE donazione (
 );
 
 
--- 3. EVENTI E INGREDIENTI
+-- 3. EVENTI, PIETANZE E INGREDIENTI
 CREATE TABLE evento (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    numero_invitati INTEGER NOT NULL,
+    tipo_evento TEXT NOT NULL CHECK (tipo_evento IN ('Pranzo', 'Cena', 'Buffet', 'Aperitivo', 'Festa')),
+    numero_invitati INTEGER NOT NULL CHECK (numero_invitati >= 1),
+    numero_bambini INTEGER NOT NULL DEFAULT 0 CHECK (numero_bambini >= 0 AND numero_bambini <= numero_invitati),
     budget NUMERIC,
+    data_creazione TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     id_utente UUID REFERENCES utente_fisico(id),
     id_impresa UUID REFERENCES utente_impresa(id),
     id_centro UUID REFERENCES centri(id),
@@ -76,12 +79,27 @@ CREATE TABLE ingrediente (
     nome TEXT NOT NULL
 );
 
-CREATE TABLE ingrediente_evento (
-    id_evento UUID REFERENCES evento(id) ON DELETE CASCADE,
+CREATE TABLE pietanza_evento (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_evento UUID NOT NULL REFERENCES evento(id) ON DELETE CASCADE,
+    nome_pietanza TEXT NOT NULL,
+    ha_ricetta_utente BOOLEAN NOT NULL DEFAULT false,
+    persone_riferimento INTEGER,
+
+    CONSTRAINT check_persone_riferimento CHECK (
+        (ha_ricetta_utente = true AND persone_riferimento >= 1) OR
+        (ha_ricetta_utente = false AND persone_riferimento IS NULL)
+    )
+);
+
+CREATE TABLE ingrediente_pietanza (
+    id_pietanza UUID REFERENCES pietanza_evento(id) ON DELETE CASCADE,
     id_ingrediente UUID REFERENCES ingrediente(id) ON DELETE CASCADE,
-    quantita NUMERIC NOT NULL,
-    unita TEXT NOT NULL,
-    PRIMARY KEY (id_evento, id_ingrediente)
+    quantita_base NUMERIC NOT NULL,
+    unita TEXT NOT NULL CHECK (unita IN ('g', 'ml', 'pz', 'cucchiai', 'q.b.')),
+    gia_disponibile BOOLEAN NOT NULL DEFAULT false,
+    quantita_disponibile NUMERIC NOT NULL DEFAULT 0,
+    PRIMARY KEY (id_pietanza, id_ingrediente)
 );
 
 
@@ -91,11 +109,14 @@ CREATE TABLE conversazione (
     id_centro UUID NOT NULL REFERENCES centri(id),
     id_utente UUID REFERENCES utente_fisico(id),
     id_impresa UUID REFERENCES utente_impresa(id),
+    data_creazione TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     
     CONSTRAINT check_donatore_chat_esclusivo CHECK (
         (id_utente IS NOT NULL AND id_impresa IS NULL) OR
         (id_utente IS NULL AND id_impresa IS NOT NULL)
-    )
+    ),
+    UNIQUE (id_centro, id_utente),
+    UNIQUE (id_centro, id_impresa)
 );
 
 CREATE TABLE messaggio (
